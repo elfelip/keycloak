@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # Copyright: (c) 2017, Eike Frost <ei@kefro.st>
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or
+# https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
 class ModuleDocFragment(object):
@@ -22,7 +23,7 @@ options:
             - openid-connect
         default: openid-connect
     protocolMapper:
-        description: 
+        description:
             - Protocol mapper type.
         type: str
         choices:

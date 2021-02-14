@@ -19,7 +19,6 @@ module: keycloak_user
 short_description: create and Configure a user in Keycloak
 description:
     - This module creates, removes or update Keycloak users.
-version_added: "2.9"
 options:
     realm:
         description:

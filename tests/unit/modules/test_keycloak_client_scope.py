@@ -4,28 +4,29 @@ from tests.unit.module_utils.utils import AnsibleExitJson, AnsibleFailJson, Modu
 import requests
 import json
 
+
 class KeycloakClientScopeTestCase(ModuleTestCase):
     testClientScope = {
-      "name": "newclientscope",
-      "description": "New Client Scope",
-      "protocol": "openid-connect",
-      "attributes": {
-        "include.in.token.scope": "true",
-        "display.on.consent.screen": "true"
-      },
-      "protocolMappers": [
-        {
-          "name": "new-mapper-audience",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-audience-mapper",
-          "consentRequired": False,
-          "config": {
-            "included.client.audience": "admin-cli",
-            "id.token.claim": "true",
-            "access.token.claim": "true"
-          }
-        }
-      ]
+        "name": "newclientscope",
+        "description": "New Client Scope",
+        "protocol": "openid-connect",
+        "attributes": {
+            "include.in.token.scope": "true",
+            "display.on.consent.screen": "true"
+        },
+        "protocolMappers": [
+            {
+                "name": "new-mapper-audience",
+                "protocol": "openid-connect",
+                "protocolMapper": "oidc-audience-mapper",
+                "consentRequired": False,
+                "config": {
+                    "included.client.audience": "admin-cli",
+                    "id.token.claim": "true",
+                    "access.token.claim": "true"
+                }
+            }
+        ]
     }
 
     testClientScopes = [
@@ -62,9 +63,19 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
         "state": "present",
         "force": False
     }
-    excudes = ["auth_keycloak_url","auth_username","auth_password","state","force","realm","composites","_ansible_keep_remote_files","_ansible_remote_tmp"]
+    excudes = [
+        "auth_keycloak_url",
+        "auth_username",
+        "auth_password",
+        "state",
+        "force",
+        "realm",
+        "composites",
+        "_ansible_keep_remote_files",
+        "_ansible_remote_tmp"]
     kc = None
     baseurl = "http://localhost:18081"
+
     def setUp(self):
         super(KeycloakClientScopeTestCase, self).setUp()
         self.module = keycloak_client_scope
@@ -76,14 +87,14 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
         self.clientScopeProtocolMapperAddModelsBaseUrl = self.clientScopeProtocolMappersBaseUrl + "/add-models"
         # Create Client scope
         self.headers = get_token(
-            base_url=self.baseurl+'/auth',
+            base_url=self.baseurl + '/auth',
             auth_realm="master",
             client_id="admin-cli",
             auth_username=username,
             auth_password=password,
             validate_certs=False,
             client_secret=None)
-        
+
         for testClientScope in self.testClientScopes:
             getResponse = requests.get(
                 self.clientScopesUrl.format(baseurl=self.baseurl),
@@ -95,12 +106,13 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
                     scopeFound = True
                     break
             if not scopeFound:
-                data=json.dumps(testClientScope)
+                data = json.dumps(testClientScope)
                 postResponse = requests.post(
-                    self.clientScopesUrl.format(baseurl=self.baseurl), 
-                        headers=self.headers,
-                        data=data)
+                    self.clientScopesUrl.format(baseurl=self.baseurl),
+                    headers=self.headers,
+                    data=data)
                 print("Status code: {0}".format(str(postResponse.status_code)))
+
     def tearDown(self):
         allClientScopes = self.testClientScopes.copy()
         allClientScopes.append(self.testClientScope.copy())
@@ -112,16 +124,17 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
             scopeFound = False
             scope = {}
             for scope in scopes:
-                if 'name' in scope and 'name' in testClientScope and scope['name'] == testClientScope['name']:
+                if 'name' in scope and 'name' in testClientScope and scope[
+                        'name'] == testClientScope['name']:
                     scopeFound = True
                     break
             if scopeFound:
                 id = scope['id']
                 deleteResponse = requests.delete(
-                    self.clientScopeUrl.format(baseurl=self.baseurl, id=id), 
+                    self.clientScopeUrl.format(baseurl=self.baseurl, id=id),
                     headers=self.headers)
-                print("Status code: {0}".format(str(deleteResponse.status_code)))
-
+                print("Status code: {0}".format(
+                    str(deleteResponse.status_code)))
 
     def test_create_new_client_scope(self):
         toCreate = self.testClientScope.copy()
@@ -133,7 +146,8 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
         scope = ClientScope(rep=self.testClientScope)
-        created_scope = ClientScope(rep=results.exception.args[0]['client_scope'])
+        created_scope = ClientScope(
+            rep=results.exception.args[0]['client_scope'])
         self.assertFalse(
             scope.changed(created_scope),
             "asked: {}, created: {}".format(
@@ -151,7 +165,8 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
         scope = ClientScope(rep=self.testClientScopes[0])
-        updated_scope = ClientScope(rep=results.exception.args[0]['client_scope'])
+        updated_scope = ClientScope(
+            rep=results.exception.args[0]['client_scope'])
         self.assertEquals(
             updated_scope.description,
             toUpdate['description'],
@@ -160,7 +175,7 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
                 toUpdate['description']
             )
         )
-            
+
         self.assertTrue(
             scope.changed(updated_scope),
             "Client scope has not change. asked: {}, created: {}".format(
@@ -177,7 +192,8 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
             self.module.main()
         self.assertFalse(results.exception.args[0]['changed'])
 
-    def test_update_client_scope_protocol_mapper_included_client_audience(self):
+    def test_update_client_scope_protocol_mapper_included_client_audience(
+            self):
         toUpdate = self.testClientScopes[0].copy()
         toUpdate.update(self.kcparams.copy())
         toUpdate.update(self.meta_params.copy())
@@ -188,9 +204,10 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
         scope = ClientScope(rep=self.testClientScopes[0])
-        updated_scope = ClientScope(rep=results.exception.args[0]['client_scope'])
+        updated_scope = ClientScope(
+            rep=results.exception.args[0]['client_scope'])
         self.assertEquals(
-            updated_scope.protocolMappers[0].config['included.client.audience'], 
+            updated_scope.protocolMappers[0].config['included.client.audience'],
             'account',
             'Included client audience prodocol mapper config has not been updated: {}'.format(
                 updated_scope.protocolMappers[0].config['included.client.audience']))
@@ -199,7 +216,6 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
             "Client scope has not change. asked: {}, created: {}".format(
                 str(scope.getRepresentation()),
                 str(updated_scope.getRepresentation())))
-
 
     def test_update_client_scope_protocol_mapper_id_token_claim(self):
         toUpdate = self.testClientScopes[0].copy()
@@ -212,11 +228,13 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
         scope = ClientScope(rep=self.testClientScopes[0])
-        updated_scope = ClientScope(rep=results.exception.args[0]['client_scope'])
+        updated_scope = ClientScope(
+            rep=results.exception.args[0]['client_scope'])
         self.assertEquals(
-            updated_scope.protocolMappers[0].config['id.token.claim'], 
+            updated_scope.protocolMappers[0].config['id.token.claim'],
             'false',
-            'Id token claim prodocol mapper config has not been updated: {}'.format(updated_scope.protocolMappers[0].config['id.token.claim']))
+            'Id token claim prodocol mapper config has not been updated: {}'.format(
+                updated_scope.protocolMappers[0].config['id.token.claim']))
         self.assertFalse(
             scope.changed(updated_scope),
             "Client scope has not change. asked: {}, created: {}".format(
@@ -237,10 +255,11 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         scope = ClientScope(rep=toUpdate)
-        updated_scope = ClientScope(rep=results.exception.args[0]['client_scope'])
+        updated_scope = ClientScope(
+            rep=results.exception.args[0]['client_scope'])
         self.assertTrue(results.exception.args[0]['changed'])
         self.assertEquals(
-            len(updated_scope.protocolMappers), 
+            len(updated_scope.protocolMappers),
             2,
             'Protocol Mapper not added to client scope: {}'.format(str(len(updated_scope.protocolMappers))))
 
@@ -254,14 +273,16 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         scope = ClientScope(rep=toUpdate)
-        updated_scope = ClientScope(rep=results.exception.args[0]['client_scope'])
+        updated_scope = ClientScope(
+            rep=results.exception.args[0]['client_scope'])
         self.assertTrue(results.exception.args[0]['changed'])
         self.assertEquals(
-            len(updated_scope.protocolMappers), 
+            len(updated_scope.protocolMappers),
             0,
             'Protocol Mapper not deleted from client scope: {}'.format(str(len(updated_scope.protocolMappers))))
 
-    def test_update_client_scope_delete_protocol_mapper_using_state_absent(self):
+    def test_update_client_scope_delete_protocol_mapper_using_state_absent(
+            self):
         toUpdate = self.testClientScopes[0].copy()
         toUpdate.update(self.kcparams.copy())
         toUpdate.update(self.meta_params.copy())
@@ -271,9 +292,10 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         scope = ClientScope(rep=toUpdate)
-        updated_scope = ClientScope(rep=results.exception.args[0]['client_scope'])
+        updated_scope = ClientScope(
+            rep=results.exception.args[0]['client_scope'])
         self.assertTrue(results.exception.args[0]['changed'])
         self.assertEquals(
-            len(updated_scope.protocolMappers), 
+            len(updated_scope.protocolMappers),
             0,
             'Protocol Mapper not deleted from client scope: {}'.format(str(len(updated_scope.protocolMappers))))

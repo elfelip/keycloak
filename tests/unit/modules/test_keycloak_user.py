@@ -2,48 +2,58 @@ from plugins.modules import keycloak_user, keycloak_group, keycloak_role
 from plugins.module_utils.keycloak import isDictEquals
 from tests.unit.module_utils.utils import AnsibleExitJson, AnsibleFailJson, ModuleTestCase, set_module_args
 
+
 class KeycloakUserTestCase(ModuleTestCase):
     testGroups = [
         {
-            "auth_username":"admin", 
-            "auth_password":"admin",
-            "realm":"master",
-            "auth_keycloak_url":"http://localhost:18081/auth",
-            "name":"testUserGroup1",
-            "state":"present",
-            "force":False
-            },
+            "auth_username": "admin",
+            "auth_password": "admin",
+            "realm": "master",
+            "auth_keycloak_url": "http://localhost:18081/auth",
+            "name": "testUserGroup1",
+            "state": "present",
+            "force": False
+        },
         {
-            "auth_username":"admin", 
-            "auth_password":"admin",
-            "realm":"master",
-            "auth_keycloak_url":"http://localhost:18081/auth",
-            "name":"testUserGroup2",
-            "state":"present",
-            "force":False
-            }
-        ]
-    compareExcludes = ["auth_keycloak_url", "auth_username", "auth_password", "realm", "state", "force", "credentials","_ansible_keep_remote_files","_ansible_remote_tmp"]
+            "auth_username": "admin",
+            "auth_password": "admin",
+            "realm": "master",
+            "auth_keycloak_url": "http://localhost:18081/auth",
+            "name": "testUserGroup2",
+            "state": "present",
+            "force": False
+        }
+    ]
+    compareExcludes = [
+        "auth_keycloak_url",
+        "auth_username",
+        "auth_password",
+        "realm",
+        "state",
+        "force",
+        "credentials",
+        "_ansible_keep_remote_files",
+        "_ansible_remote_tmp"]
     testRoles = [
         {
-            "auth_username":"admin", 
-            "auth_password":"admin",
-            "realm":"master",
-            "auth_keycloak_url":"http://localhost:18081/auth",
-            "name":"testUserRole1",
-            "description":"Test1",
-            "state":"present",
-            "force":False
+            "auth_username": "admin",
+            "auth_password": "admin",
+            "realm": "master",
+            "auth_keycloak_url": "http://localhost:18081/auth",
+            "name": "testUserRole1",
+            "description": "Test1",
+            "state": "present",
+            "force": False
         },
-                {
-            "auth_username":"admin", 
-            "auth_password":"admin",
-            "realm":"master",
-            "auth_keycloak_url":"http://localhost:18081/auth",
-            "name":"testUserRole2",
-            "description":"Test2",
-            "state":"present",
-            "force":False
+        {
+            "auth_username": "admin",
+            "auth_password": "admin",
+            "realm": "master",
+            "auth_keycloak_url": "http://localhost:18081/auth",
+            "name": "testUserRole2",
+            "description": "Test2",
+            "state": "present",
+            "force": False
         }]
 
     testUsers = [
@@ -58,11 +68,11 @@ class KeycloakUserTestCase(ModuleTestCase):
             "email": "user1@user.ca",
             "enabled": True,
             "emailVerified": False,
-            "credentials": [{"temporary": 'false',"type": "password","value": "password"}], 
-            "clientRoles": [{"clientId": "master-realm","roles": ["manage-clients"]}],
-            "realmRoles": ["testUserRole1","testUserRole2"],
-            "attributes": {"attr1": ["value1"],"attr2": ["value2"]},
-            "groups": ["testUserGroup1","testUserGroup2"],
+            "credentials": [{"temporary": 'false', "type": "password", "value": "password"}],
+            "clientRoles": [{"clientId": "master-realm", "roles": ["manage-clients"]}],
+            "realmRoles": ["testUserRole1", "testUserRole2"],
+            "attributes": {"attr1": ["value1"], "attr2": ["value2"]},
+            "groups": ["testUserGroup1", "testUserGroup2"],
             "state":"absent",
             "force":"no"
         },
@@ -77,11 +87,11 @@ class KeycloakUserTestCase(ModuleTestCase):
             "email": "user2@user.ca",
             "enabled": True,
             "emailVerified": False,
-            "credentials": [{"temporary": 'false',"type": "password","value": "password"}],
-            "clientRoles": [{"clientId": "master-realm","roles": ["manage-clients"]}],
-            "realmRoles": ["testUserRole1","testUserRole2"],
-            "attributes": {"attr1": ["value1"],"attr2": ["value2"]},
-            "groups": ["testUserGroup1","testUserGroup2"],
+            "credentials": [{"temporary": 'false', "type": "password", "value": "password"}],
+            "clientRoles": [{"clientId": "master-realm", "roles": ["manage-clients"]}],
+            "realmRoles": ["testUserRole1", "testUserRole2"],
+            "attributes": {"attr1": ["value1"], "attr2": ["value2"]},
+            "groups": ["testUserGroup1", "testUserGroup2"],
             "state": "present",
             "force": False
         },
@@ -96,11 +106,11 @@ class KeycloakUserTestCase(ModuleTestCase):
             "email": "user3@user.ca",
             "enabled": True,
             "emailVerified": False,
-            "credentials": [{"temporary": 'false',"type": "password","value": "password"}],
-            "clientRoles": [{"clientId": "master-realm","roles": ["manage-clients"]}],
-            "realmRoles": ["testUserRole1","testUserRole2"],
-            "attributes": {"attr1": ["value1"],"attr2": ["value2"]},
-            "groups": ["testUserGroup1","testUserGroup2"],
+            "credentials": [{"temporary": 'false', "type": "password", "value": "password"}],
+            "clientRoles": [{"clientId": "master-realm", "roles": ["manage-clients"]}],
+            "realmRoles": ["testUserRole1", "testUserRole2"],
+            "attributes": {"attr1": ["value1"], "attr2": ["value2"]},
+            "groups": ["testUserGroup1", "testUserGroup2"],
             "state":"present",
             "force": False
         },
@@ -115,10 +125,10 @@ class KeycloakUserTestCase(ModuleTestCase):
             "email": "user4@user.ca",
             "enabled": True,
             "emailVerified": False,
-            "credentials": [{"temporary": 'false',"type": "password","value": "password"}],
-            "clientRoles": [{"clientId": "master-realm","roles": ["manage-clients"]}],
+            "credentials": [{"temporary": 'false', "type": "password", "value": "password"}],
+            "clientRoles": [{"clientId": "master-realm", "roles": ["manage-clients"]}],
             "realmRoles": ["testUserRole1"],
-            "attributes": {"attr1": ["value1"],"attr2": ["value2"]},
+            "attributes": {"attr1": ["value1"], "attr2": ["value2"]},
             "groups": ["testUserGroup1"],
             "state":"present",
             "force": False
@@ -134,11 +144,11 @@ class KeycloakUserTestCase(ModuleTestCase):
             "email": "user5@user.ca",
             "enabled": True,
             "emailVerified": False,
-            "credentials": [{"temporary": 'false',"type": "password","value": "password"}],
-            "clientRoles": [{"clientId": "master-realm","roles": ["manage-clients"]}],
-            "realmRoles": ["uma_authorization","offline_access"],
-            "attributes": {"attr1": ["value1"],"attr2": ["value2"]},
-            "groups": ["testUserGroup1","testUserGroup2"],
+            "credentials": [{"temporary": 'false', "type": "password", "value": "password"}],
+            "clientRoles": [{"clientId": "master-realm", "roles": ["manage-clients"]}],
+            "realmRoles": ["uma_authorization", "offline_access"],
+            "attributes": {"attr1": ["value1"], "attr2": ["value2"]},
+            "groups": ["testUserGroup1", "testUserGroup2"],
             "state":"present",
             "force": False
         },
@@ -153,11 +163,11 @@ class KeycloakUserTestCase(ModuleTestCase):
             "email": "user6@user.ca",
             "enabled": True,
             "emailVerified": False,
-            "credentials": [{"temporary": 'false',"type": "password","value": "password"}], 
-            "realmRoles": ["testUserRole1","testUserRole2"],
+            "credentials": [{"temporary": 'false', "type": "password", "value": "password"}],
+            "realmRoles": ["testUserRole1", "testUserRole2"],
             "state":"absent",
             "force":"no"
-        },        
+        },
         {
             "auth_keycloak_url": "http://localhost:18081/auth",
             "auth_username": "admin",
@@ -169,8 +179,8 @@ class KeycloakUserTestCase(ModuleTestCase):
             "email": "user7@user.ca",
             "enabled": True,
             "emailVerified": False,
-            "credentials": [{"temporary": 'false',"type": "password","value": "password"}], 
-            "clientRoles": [{"clientId": "master-realm","roles": ["manage-clients"]}],
+            "credentials": [{"temporary": 'false', "type": "password", "value": "password"}],
+            "clientRoles": [{"clientId": "master-realm", "roles": ["manage-clients"]}],
             "state":"absent",
             "force":"no"
         },
@@ -185,11 +195,11 @@ class KeycloakUserTestCase(ModuleTestCase):
             "email": "user8@user.ca",
             "enabled": True,
             "emailVerified": False,
-            "credentials": [{"temporary": 'false',"type": "password","value": "password"}],
-            "clientRoles": [{"clientId": "doesnotexist","roles": ["manage-clients"]}],
-            "realmRoles": ["testUserRole1","testUserRole2"],
-            "attributes": {"attr1": ["value1"],"attr2": ["value2"]},
-            "groups": ["testUserGroup1","testUserGroup2"],
+            "credentials": [{"temporary": 'false', "type": "password", "value": "password"}],
+            "clientRoles": [{"clientId": "doesnotexist", "roles": ["manage-clients"]}],
+            "realmRoles": ["testUserRole1", "testUserRole2"],
+            "attributes": {"attr1": ["value1"], "attr2": ["value2"]},
+            "groups": ["testUserGroup1", "testUserGroup2"],
             "state":"absent",
             "force": False
         },
@@ -204,16 +214,16 @@ class KeycloakUserTestCase(ModuleTestCase):
             "email": "user9@user.ca",
             "enabled": True,
             "emailVerified": False,
-            "credentials": [{"temporary": 'false',"type": "password","value": "password"}],
-            "clientRoles": [{"clientId": "does not exist","roles": ["manage-clients"]}],
-            "realmRoles": ["testUserRole1","testUserRole2"],
-            "attributes": {"attr1": ["value1"],"attr2": ["value2"]},
-            "groups": ["testUserGroup1","testUserGroup2"],
+            "credentials": [{"temporary": 'false', "type": "password", "value": "password"}],
+            "clientRoles": [{"clientId": "does not exist", "roles": ["manage-clients"]}],
+            "realmRoles": ["testUserRole1", "testUserRole2"],
+            "attributes": {"attr1": ["value1"], "attr2": ["value2"]},
+            "groups": ["testUserGroup1", "testUserGroup2"],
             "state":"absent",
             "force": False
-        }                
+        }
     ]
-    
+
     def setUp(self):
         super(KeycloakUserTestCase, self).setUp()
         self.module = keycloak_group
@@ -233,6 +243,7 @@ class KeycloakUserTestCase(ModuleTestCase):
             set_module_args(theUser)
             with self.assertRaises(AnsibleExitJson) as results:
                 self.module.main()
+
     def tearDown(self):
         self.module = keycloak_user
         for user in self.testUsers:
@@ -253,8 +264,8 @@ class KeycloakUserTestCase(ModuleTestCase):
             set_module_args(theRole)
             with self.assertRaises(AnsibleExitJson) as results:
                 self.module.main()
-        super(KeycloakUserTestCase, self).tearDown()           
- 
+        super(KeycloakUserTestCase, self).tearDown()
+
     def test_create_user(self):
         toCreate = self.testUsers[0].copy()
         toCreate["state"] = "present"
@@ -262,7 +273,13 @@ class KeycloakUserTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertTrue(isDictEquals(toCreate, results.exception.args[0]["user"], self.compareExcludes), "user: " + str(toCreate) + " : " + str(results.exception.args[0]["user"]))
+        self.assertTrue(
+            isDictEquals(
+                toCreate,
+                results.exception.args[0]["user"],
+                self.compareExcludes),
+            "user: " + str(toCreate) + " : " + str(
+                results.exception.args[0]["user"]))
 
     def test_user_not_changed(self):
         toDoNotChange = self.testUsers[1].copy()
@@ -270,7 +287,16 @@ class KeycloakUserTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertFalse(results.exception.args[0]['changed'])
-        self.assertTrue(isDictEquals(toDoNotChange, results.exception.args[0]["user"], self.compareExcludes), "user: " + str(toDoNotChange) + " : " + str(results.exception.args[0]["user"]))
+        self.assertTrue(
+            isDictEquals(
+                toDoNotChange,
+                results.exception.args[0]["user"],
+                self.compareExcludes),
+            "user: " +
+            str(toDoNotChange) +
+            " : " +
+            str(
+                results.exception.args[0]["user"]))
 
     def test_user_modify_force(self):
         toDoNotChange = self.testUsers[2].copy()
@@ -279,19 +305,35 @@ class KeycloakUserTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertTrue(isDictEquals(toDoNotChange, results.exception.args[0]["user"], self.compareExcludes), "user: " + str(toDoNotChange) + " : " + str(results.exception.args[0]["user"]))
+        self.assertTrue(
+            isDictEquals(
+                toDoNotChange,
+                results.exception.args[0]["user"],
+                self.compareExcludes),
+            "user: " +
+            str(toDoNotChange) +
+            " : " +
+            str(
+                results.exception.args[0]["user"]))
 
     def test_modify_user(self):
         toChange = self.testUsers[3].copy()
         toChange["lastName"] = "Modified"
-        toChange["clientRoles"] = [{"clientId": "master-realm","roles": ["manage-clients","query-groups"]}]
-        toChange["realmRoles"] = ["testUserRole1","testUserRole2"]
+        toChange["clientRoles"] = [
+            {"clientId": "master-realm", "roles": ["manage-clients", "query-groups"]}]
+        toChange["realmRoles"] = ["testUserRole1", "testUserRole2"]
         set_module_args(toChange)
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertTrue(isDictEquals(toChange, results.exception.args[0]["user"], self.compareExcludes), "user: " + str(toChange) + " : " + str(results.exception.args[0]["user"]))
-        
+        self.assertTrue(
+            isDictEquals(
+                toChange,
+                results.exception.args[0]["user"],
+                self.compareExcludes),
+            "user: " + str(toChange) + " : " + str(
+                results.exception.args[0]["user"]))
+
     def test_delete_user(self):
         toDelete = self.testUsers[4].copy()
         toDelete["state"] = "absent"
@@ -299,7 +341,10 @@ class KeycloakUserTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertRegexpMatches(results.exception.args[0]['msg'], 'deleted', 'User not deleted')
+        self.assertRegexpMatches(
+            results.exception.args[0]['msg'],
+            'deleted',
+            'User not deleted')
 
     def test_create_user_without_client_role(self):
         toCreate = self.testUsers[5].copy()
@@ -308,7 +353,13 @@ class KeycloakUserTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertTrue(isDictEquals(toCreate, results.exception.args[0]["user"], self.compareExcludes), "user: " + str(toCreate) + " : " + str(results.exception.args[0]["user"]))
+        self.assertTrue(
+            isDictEquals(
+                toCreate,
+                results.exception.args[0]["user"],
+                self.compareExcludes),
+            "user: " + str(toCreate) + " : " + str(
+                results.exception.args[0]["user"]))
 
     def test_create_user_without_realm_role(self):
         toCreate = self.testUsers[6].copy()
@@ -317,7 +368,13 @@ class KeycloakUserTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertTrue(isDictEquals(toCreate, results.exception.args[0]["user"], self.compareExcludes), "user: " + str(toCreate) + " : " + str(results.exception.args[0]["user"]))
+        self.assertTrue(
+            isDictEquals(
+                toCreate,
+                results.exception.args[0]["user"],
+                self.compareExcludes),
+            "user: " + str(toCreate) + " : " + str(
+                results.exception.args[0]["user"]))
 
     def test_create_user_with_non_existing_client_role(self):
         toCreate = self.testUsers[7].copy()
@@ -325,7 +382,12 @@ class KeycloakUserTestCase(ModuleTestCase):
         set_module_args(toCreate)
         with self.assertRaises(AnsibleFailJson) as results:
             self.module.main()
-        self.assertRegexpMatches(results.exception.args[0]['msg'], 'client ' + toCreate["clientRoles"][0]["clientId"] + ' not found', 'error not generated')
+        self.assertRegexpMatches(
+            results.exception.args[0]['msg'],
+            'client ' +
+            toCreate["clientRoles"][0]["clientId"] +
+            ' not found',
+            'error not generated')
 
     def test_create_user_with_non_existing_client_role_containing_spaces(self):
         toCreate = self.testUsers[8].copy()
@@ -333,4 +395,9 @@ class KeycloakUserTestCase(ModuleTestCase):
         set_module_args(toCreate)
         with self.assertRaises(AnsibleFailJson) as results:
             self.module.main()
-        self.assertRegexpMatches(results.exception.args[0]['msg'], 'client ' + toCreate["clientRoles"][0]["clientId"] + ' not found', 'error not generated')
+        self.assertRegexpMatches(
+            results.exception.args[0]['msg'],
+            'client ' +
+            toCreate["clientRoles"][0]["clientId"] +
+            ' not found',
+            'error not generated')

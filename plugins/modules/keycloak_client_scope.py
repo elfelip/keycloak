@@ -2,9 +2,13 @@
 # -*- coding: utf-8 -*-
 
 # Copyright: (c) 2019, INSPQ <philippe.gauthier@inspq.qc.ca>
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or
+# https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
+from ansible.module_utils.basic import AnsibleModule
+from plugins.module_utils.keycloak import KeycloakAPI, camel, \
+    keycloak_argument_spec, get_token, KeycloakError, isDictEquals, ClientScope, ProtocolMapper
 __metaclass__ = type
 
 
@@ -54,9 +58,68 @@ options:
             - List or protocole mappers for the client scope
         required: false
         type: list
-        extends_documentation_fragment:
-            - keycloak_protocol_mapper
-
+        suboptions:
+            name:
+                description:
+                    - Name of the protocol mapper
+                type: str
+                required: true
+            protocol:
+                description:
+                    - Protocol fot the mapper
+                type: str
+                choices:
+                    - openid-connect
+                default: openid-connect
+            protocolMapper:
+                description:
+                    - Protocol mapper type.
+                type: str
+                choices:
+                    - oidc-audience-mapper
+                    - oidc-usermodel-realm-role-mapper
+                    - oidc-hardcoded-claim-mapper
+                    - oidc-sha256-pairwise-sub-mapper
+                    - oidc-claims-param-token-mapper
+                    - oidc-usersessionmodel-note-mapper
+                    - oidc-address-mapper
+                    - oidc-hardcoded-role-mapper
+                    - oidc-usermodel-client-role-mapper
+                    - oidc-usermodel-property-mapper
+                    - oidc-full-name-mapper
+                    - oidc-usermodel-attribute-mapper
+                    - oidc-allowed-origins-mapper
+                    - oidc-group-membership-mapper
+                    - oidc-role-name-mapper
+                    - oidc-audience-resolve-mapper
+                    - saml-javascript-mapper
+                    - saml-user-attribute-mapper
+                    - saml-hardcode-role-mapper
+                    - saml-hardcode-attribute-mapper
+                    - saml-role-name-mapper
+                    - saml-audience-resolve-mapper
+                    - saml-user-session-note-mapper
+                    - saml-user-property-mapper
+                    - saml-group-membership-mapper
+                    - saml-role-list-mapper
+                    - saml-audience-mapper
+                required: true
+            consentRequired:
+                description:
+                    - Is user consent is required to apply the mapper
+                type: bool
+                default: false
+            config:
+                description:
+                    - Configuration parameter for the mapper.
+                type: dict
+                required: false
+            state:
+                description:
+                    - Control if the client scope must exists or not
+                choices: [ "present", "absent" ]
+                default: present
+                type: str
     state:
         description:
             - Control if the client scope must exists or not
@@ -90,12 +153,12 @@ EXAMPLES = '''
         attributes:
             include.in.token.scope: true
             display.on.consent.screen: true
-        protocolMappers: 
+        protocolMappers:
         - name: test-audience
           protocol: openid-connect
           protocolMapper: oidc-audience-mapper
           consentRequired: false
-          config: 
+          config:
             included.client.audience: admin-cli
             id.token.claim: true
             access.token.claim: true
@@ -130,9 +193,6 @@ changed:
   returned: always
   type: bool
 '''
-from plugins.module_utils.keycloak import KeycloakAPI, camel, \
-    keycloak_argument_spec, get_token, KeycloakError, isDictEquals, ClientScope, ProtocolMapper
-from ansible.module_utils.basic import AnsibleModule
 
 
 def main():
@@ -169,19 +229,24 @@ def main():
 
     client_scope = ClientScope(module_params=module.params)
     changed = False
-    found_client_scopes = kc.search_client_scope_by_name(client_scope.name, realm=realm)
+    found_client_scopes = kc.search_client_scope_by_name(
+        client_scope.name, realm=realm)
     if len(found_client_scopes) == 0:  # Scope does not already exists
-        response = kc.create_client_scope(client_scope=client_scope, realm=realm)
+        response = kc.create_client_scope(
+            client_scope=client_scope, realm=realm)
         if response.code == 201:
-            result['client_scope'] = kc.search_client_scope_by_name(name=client_scope.name)[0].getRepresentation()
+            result['client_scope'] = kc.search_client_scope_by_name(
+                name=client_scope.name)[0].getRepresentation()
             changed = True
     else:
         if client_scope.need_change(client_scope=found_client_scopes[0]):
-            response = kc.update_client_scope(client_scope=client_scope, realm=realm)
+            response = kc.update_client_scope(
+                client_scope=client_scope, realm=realm)
             if response is not None and response.code == 204:
                 changed = True
 
-        result['client_scope'] = kc.get_client_scope_by_id(id=found_client_scopes[0].id).getRepresentation()
+        result['client_scope'] = kc.get_client_scope_by_id(
+            id=found_client_scopes[0].id).getRepresentation()
 
     result['changed'] = changed
     module.exit_json(**result)
@@ -235,6 +300,7 @@ def main():
     result['changed'] = changed
     module.exit_json(**result)
 """
+
 
 if __name__ == '__main__':
     main()
