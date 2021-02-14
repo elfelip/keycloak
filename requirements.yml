@@ -1,0 +1,4 @@
+# Install a collection from Ansible Galaxy.
+collections:
+  - name: elfelip.keycloak
+    version: 0.1.3

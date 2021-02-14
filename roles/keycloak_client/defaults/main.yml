@@ -1,0 +1,8 @@
+---
+# defaults file for keycloak_client
+oidc_client_bearerOnly: false
+oidc_client_publicClient: false
+oidc_client_state: present
+oidc_client_attributes: {}
+oidc_client_redirectUris: []
+oidc_client_weborigins: []

@@ -1,0 +1,34 @@
+- name: Creation du hote virtuel dans APACHE
+  template:
+    src: keycloak-gabarit-apache.conf
+    dest: /etc/httpd/conf.d/{{ keycloak_base_url }}.conf
+  register: httpd
+  when: keycloak_base_url is defined and ansible_os_family == 'RedHat' and keycloak_base_url != 'localhost'
+
+- name: Creer le repertoire de certificat
+  file:
+    path: "{{ cert_file_path }}"
+    state: directory
+  when: cert_file_path is defined
+
+- name: Copie du certificat SSL
+  copy:
+    src: "{{ keycloak_cert_path }}/{{ keycloak_cert_file }}"
+    dest: "{{ cert_file_path }}/{{ keycloak_cert_file }}"
+  when: keycloak_cert_file is defined and cert_file_path is defined
+  
+- name: Creer le repertoire de cle SSL
+  file:
+    path: "{{ cert_key_path }}"
+    state: directory
+  when: cert_key_path is defined
+
+- name: Copie de la clé du certificat
+  copy:
+    src: "{{ keycloak_cert_path }}/{{ keycloak_cert_key }}"
+    dest: "{{ cert_key_path }}/{{ keycloak_cert_key }}"
+  when: keycloak_cert_key is defined and cert_key_path is defined
+  
+- name: restart httpd 
+  service: name=httpd state=restarted
+  when: httpd.changed

@@ -1,0 +1,49 @@
+---
+# tasks file for keycloak_client
+- name: Installation des paquetages pour keycloak_client
+  yum:
+    name: "{{ keycloak_client_packages }}"
+    state: present
+  when: keycloak_client_packages is defined and ansible_os_family == 'RedHat'
+
+- name: Installation des modules python
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ keycloak_client_python_packages }}"
+  when: keycloak_client_python_packages is defined
+  
+- name: Créer ou mettre à jour le client dans Keycloak et obtenir le clientSecret
+  elfelip.keycloak.keycloak_client:
+    auth_keycloak_url: "{{ keycloak_url }}/auth"
+    auth_username: "{{ keycloak_user }}"
+    auth_password: "{{ keycloak_password }}"
+    auth_realm: "{{ keycloak_auth_realm | default(omit) }}"
+    auth_client_id: "{{ keycloak_auth_client_id | default(omit) }}"
+    auth_client_secret: "{{ keycloak_auth_client_secret | default(omit) }}"
+    realm: "{{ oidc_realm }}"
+    clientId: "{{ oidc_client_id }}"
+    name: "{{ oidc_client_name }}"
+    description: "{{ oidc_client_description }}"
+    attributes: "{{ oidc_client_attributes }}"
+    redirectUris : "{{ oidc_client_redirectUris }}"
+    webOrigins: "{{ oidc_client_weborigins }}"
+    bearerOnly: "{{ oidc_client_bearerOnly | default(omit)  }}"
+    baseUrl: "{{ oidc_client_baseUrl | default(omit)  }}"
+    publicClient: "{{ oidc_client_publicClient | default(omit) }}"
+    directAccessGrantsEnabled:  "{{ oidc_client_directAccessGrantsEnabled | default(omit) }}"
+    authorizationServicesEnabled: "{{ oidc_client_authorizationServicesEnabled | default(omit) }}"
+    protocolMappers: "{{ oidc_client_protocolMappers | default(omit) }}"
+    roles: "{{ oidc_client_roles | default(omit) }}"
+    service_accounts_enabled: "{{ oidc_client_serviceAccountsEnabled | default(omit) }}"
+    state: "{{ oidc_client_state }}"
+  register: keycloak_client
+  when:  keycloak_url is defined
+  run_once: true
+
+- name: Configurer le clientSecret
+  set_fact:
+    oidc_client_secret: "{{keycloak_client.clientSecret.value}}"
+  when:  keycloak_client is defined and not oidc_client_publicClient and oidc_client_state == 'present'
+  run_once: true
+  

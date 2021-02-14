@@ -1,0 +1,104 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ keycloak_kube_namespace }}
+---
+{% if keycloak_kube_certificate_name is defined and keycloak_kube_certificate_name | length > 0 %}
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: {{ keycloak_kube_certificate_name }}
+  namespace: {{ keycloak_kube_namespace }}
+spec:
+  secretName: {{ keycloak_kube_certificate_name }}
+  issuerRef:
+    name: {{ keycloak_kube_certificate_issuer }}
+    kind: ClusterIssuer
+  commonName: {{ keycloak_base_url }}
+  organization:
+  - {{ keycloak_kube_certificate_org }}
+  dnsNames:
+  - {{ keycloak_base_url }}
+---
+{% endif %}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ keycloak_kube_app_name }}
+  namespace: {{ keycloak_kube_namespace }}
+  labels:
+    app: {{ keycloak_kube_app_name }}
+spec:
+  replicas: {{ keycloak_kube_replicas }}
+  selector:
+    matchLabels:
+      app: {{ keycloak_kube_app_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ keycloak_kube_app_name }}
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - name: {{ keycloak_container_name }}
+        image: {{ keycloak_image }}:{{ keycloak_image_version }}
+        env:
+{% for key, value in keycloak_container_all_env.items() %}
+{% if value is defined and value and value | length > 0 %}
+        - name: {{ key }}
+          value: "{{ value | string }}"
+{% endif %}
+{% endfor %}
+        ports:
+        - containerPort: {{ keycloak_internal_port }}
+      securityContext:
+        fsGroup: 0
+        runAsNonRoot: false
+        runAsUser: 0
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: {{ keycloak_kube_namespace }}
+  name: {{ keycloak_kube_ingress_name }}
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+{% if keycloak_kube_certificate_issuer is defined and keycloak_kube_certificate_issuer | length > 0 %}
+    cert-manager.io/cluster-issuer: {{ keycloak_kube_certificate_issuer }}
+{% endif %}
+spec:
+{% if keycloak_kube_certificate_name is defined and keycloak_kube_certificate_name | length > 0 %}
+  tls:
+  - hosts:
+    - {{ keycloak_base_url }}
+    secretName: {{ keycloak_kube_certificate_name }}
+{% endif %}
+  rules:
+  - host: {{ keycloak_base_url }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ keycloak_kube_service_name }}
+            port:
+              number: {{ keycloak_kube_service_port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ keycloak_kube_service_name }}
+  namespace: {{ keycloak_kube_namespace }}
+  labels:
+    app: {{ keycloak_kube_app_name }}
+spec:
+  ports:
+  - name: web
+    port: {{ keycloak_kube_service_port }}
+    protocol: TCP
+  selector:
+    app: {{ keycloak_kube_app_name }}

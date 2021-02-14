@@ -1,0 +1,66 @@
+- name: Suppression du conteneur pour {{ app }}
+  docker_container:
+    name: "{{ keycloak_container_name }}"
+    image: "{{ keycloak_image }}:{{ keycloak_image_version }}"
+    state: absent
+  when: delete_existing_container is defined and delete_existing_container
+
+- name: Créer le groupe
+  group:
+    name: "{{ app_group }}"
+    state: present
+
+- name: Créer l'usager
+  user:
+    name: "{{ app_user }}"
+    uid: "{{ app_user_id }}"
+    non_unique: true
+    group: "{{ app_group }}"
+    state: present
+
+- name: Creer le repertoire pour le volume des donnees de {{ app }}
+  file:
+    path: "{{ keycloak_data_volume }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: "755"
+    state: directory
+  when: keycloak_data_volume is defined
+
+- name: Creation du reseau overlay pour le mode HA si nécessaire {{ keycloak_docker_network_driver }}
+  docker_network:
+    name: "{{ keycloak_docker_network_name }}"
+    ipam_options:
+      subnet: "{{ keycloak_docker_network_subnet }}"
+    driver: "{{keycloak_docker_network_driver }}"
+  when: keycloak_ha_config is defined and keycloak_ha_config and keycloak_docker_network_driver is defined and keycloak_docker_network_driver == 'overlay' and keycloak_docker_network_name is defined and keycloak_docker_network_subnet is defined
+  run_once: true
+
+- name: Mettre a jour l'image Docker
+  set_fact:
+    keycloak_image_pull: False
+  when: local is defined and local
+
+- name: Définir les réseaux si nécessaires
+  set_fact:
+    keycloak_docker_networks:
+    - name: "{{ keycloak_docker_network_name }}"
+      ipv4_address: "{{ docker_macvlan_ipv4_address | default(omit) }}"
+      aliases:
+      - "{{ keycloak_complete_container_name }}"
+  when: keycloak_ha_config is defined and keycloak_ha_config | length > 0 and keycloak_docker_network_name is defined and keycloak_docker_network_name | length > 0
+
+- name: Conteneur Keycloak
+  docker_container:
+    name: "{{ keycloak_complete_container_name }}"
+    hostname: "{{ keycloak_complete_container_name }}"
+    image: "{{ keycloak_image }}:{{ keycloak_image_version }}"
+    state: started
+    restart_policy: unless-stopped
+    pull: "{{ keycloak_image_pull | default(True) }}"
+    log_driver: "{{ keycloak_log_driver | default(omit) }}"
+    log_options: "{{ keycloak_log_options | default(omit) }}"
+    ports: "{{ keycloak_port_mappings }}"
+    volumes: "{{ keycloak_volumes | default(omit) }}"
+    networks: "{{ keycloak_docker_networks | default(omit) }}"
+    env: "{{ keycloak_container_all_env }}"

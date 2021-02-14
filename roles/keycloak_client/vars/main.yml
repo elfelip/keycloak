@@ -1,0 +1,9 @@
+---
+# vars file for keycloak_client
+keycloak_client_packages:
+- python-requests
+#- docker-python
+#- python-pip
+#keycloak_client_python_packages:
+#- requests
+#- requests[security]

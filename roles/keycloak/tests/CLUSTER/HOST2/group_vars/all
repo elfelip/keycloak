@@ -1,0 +1,23 @@
+---
+# vars file for sx5-keycloak-msss
+#Fichier de journalisation local (m=Magabit, k=Kilobit)
+keycloak_image: jboss/keycloak
+keycloak_container_name: testkc2
+keycloak_user: admin
+keycloak_password: admin
+keycloak_external_port: 18081
+keycloak_base_url: "{{ ansible_fqdn }}"
+keycloak_protocol: http
+keycloak_external_port: 18082
+keycloak_url: "{{ keycloak_protocol }}://{{ keycloak_base_url }}:{{ keycloak_external_port }}"
+keycloak_db_url: "jdbc:postgresql://172.17.0.1:15432/keycloak"
+keycloak_db_username: keycloak
+keycloak_db_password: Keycl0ak
+keycloak_db_driver: postgresql
+keycloak_auth_client_id: admin-cli
+keycloak_auth_client_secret:
+keycloak_auth_realm: master
+keycloak_ha_config: standalone-ha-test.xml
+keycloak_graylog_rotate_size: 5m
+keycloak_graylog_nb_file: 20
+keycloak_graylog_log_file: EventListenerProviderLogs.log

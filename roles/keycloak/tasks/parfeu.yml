@@ -1,0 +1,10 @@
+- name: Verifier si le firewall est actif
+  command: systemctl status firewalld
+  ignore_errors: yes
+  register: security_firewall
+
+- name: Ouvrir les ports
+  firewalld: port="{{ item }}/tcp" state=enabled immediate=true permanent=true
+  with_items: 
+    - "{{ keycloak_external_port }}"
+  when: security_firewall is defined and security_firewall.rc == 0

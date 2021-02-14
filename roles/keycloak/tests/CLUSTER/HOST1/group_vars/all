@@ -1,0 +1,289 @@
+---
+# vars file for sx5-keycloak-msss
+#Fichier de journalisation local (m=Magabit, k=Kilobit)
+keycloak_image: jboss/keycloak
+keycloak_container_name: testkc1
+keycloak_user: admin
+keycloak_password: admin
+keycloak_external_port: 18081
+keycloak_base_url: "{{ ansible_fqdn }}"
+keycloak_protocol: http
+keycloak_url: "{{ keycloak_protocol }}://{{ keycloak_base_url }}:{{ keycloak_external_port }}"
+keycloak_db_url: "jdbc:postgresql://172.17.0.1:15432/keycloak"
+keycloak_db_username: keycloak
+keycloak_db_password: Keycl0ak
+keycloak_db_driver: postgresql
+keycloak_auth_client_id: admin-cli
+keycloak_auth_client_secret:
+keycloak_auth_realm: master
+keycloak_ha_config: standalone-ha-test.xml
+keycloak_graylog_rotate_size: 5m
+keycloak_graylog_nb_file: 20
+keycloak_graylog_log_file: EventListenerProviderLogs.log
+idp_realm: idp
+sp_realm: sp
+idp_openid_config_url: https://accounts.google.com/.well-known/openid-configuration
+idp_clientId: test
+idp_clientSecret: testsecret
+idp_keycloak_url: "{{ keycloak_url }}"
+
+#Information sur les REALM
+keycloak_realms: 
+  - realm: "{{ sp_realm }}"
+    name: SP
+    namehtml: "Service Provider"
+    loginTheme: "{{ keycloak_default_theme | default('keycloak') }}"
+    adminTheme: "{{ keycloak_default_theme | default('keycloak') }}"
+    emailTheme: "{{ keycloak_default_theme | default('keycloak') }}"
+    accountTheme: "{{ keycloak_default_theme | default('keycloak') }}"
+    bruteForceProtected: true
+    loginWithEmailAllowed: false
+    duplicateEmailsAllowed: true
+    verifyEmail: false
+    permanentLockout: false
+    maxFailureWaitSeconds: 900
+    minimumQuickLoginWaitSeconds: 60
+    waitIncrementSeconds: 300
+    quickLoginCheckMilliSeconds: 1000
+    maxDeltaTimeSeconds: 21600
+    failureFactor: 10
+    supportedLocales:
+      - fr
+    defaultLocale: fr
+    smtpserver:
+      replyToDisplayName: root@localhost
+      port: "25"
+      host: "{{ ansible_fqdn }}"
+      replyTo: "root@localhost"
+      from: "root@localhost"
+      fromDisplayName: "root@localhost"
+      envelopeFrom: "root@localhost"
+    eventsConfig:
+      eventsEnabled: true
+      eventsListeners :
+        - jboss-logging
+      adminEventsEnabled: true
+      eventsExpiration: 172800
+      adminEventsDetailsEnabled: true
+  - realm: "{{ idp_realm }}"
+    name: IdP
+    namehtml: "Identity Provider"
+    loginTheme: "{{ keycloak_default_theme | default('keycloak') }}"
+    adminTheme: "{{ keycloak_default_theme | default('keycloak') }}"
+    emailTheme: "{{ keycloak_default_theme | default('keycloak') }}"
+    accountTheme: "{{ keycloak_default_theme | default('keycloak') }}"
+    bruteForceProtected: true
+    loginWithEmailAllowed: false
+    duplicateEmailsAllowed: true
+    verifyEmail: false
+    permanentLockout: false
+    maxFailureWaitSeconds: 900
+    minimumQuickLoginWaitSeconds: 60
+    waitIncrementSeconds: 300
+    quickLoginCheckMilliSeconds: 1000
+    maxDeltaTimeSeconds: 21600
+    failureFactor: 10
+    supportedLocales:
+      - fr
+    defaultLocale: fr
+    smtpserver:
+      replyToDisplayName: root@localhost
+      port: "25"
+      host: "{{ ansible_fqdn }}"
+      replyTo: "root@localhost"
+      from: "root@localhost"
+      fromDisplayName: "root@localhost"
+      envelopeFrom: "root@localhost"
+    eventsConfig:
+      eventsEnabled: true
+      eventsListeners :
+        - jboss-logging
+      adminEventsEnabled: true
+      eventsExpiration: 172800
+      adminEventsDetailsEnabled: true
+
+keycloak_authentication_flows:
+  - alias: "Test first broker login"
+    realm: "{{ sp_realm }}"
+    copyFrom: "first broker login"
+    authenticationExecutions:
+      - providerId: "idp-review-profile"
+        requirement: "REQUIRED"
+        authenticationConfig: 
+          alias: "Test review profile config"
+          config: 
+            update.profile.on.first.login: "missing"
+  - alias: "Test post broker login"
+    realm: "{{ sp_realm }}"
+    providerId: basic-flow
+    authenticationExecutions:
+      - providerId: identity-provider-redirector
+        requirement: ALTERNATIVE
+        authenticationConfig: 
+          alias: name
+          config: 
+             "defaultProvider": "value"
+
+keycloak_idps:
+  - alias: google
+    realm: "{{ sp_realm }}"
+    displayName: "Connexion avec Google"
+    providerId: oidc
+    firstBrokerLoginFlowAlias: "Test first broker login"
+    postBrokerLoginFlowAlias: "Test post broker login"
+    config:
+      openIdConfigurationUrl: "{{ idp_openid_config_url }}"
+      clientId: "{{ idp_clientId }}"
+      clientSecret: "{{ idp_clientSecret }}"
+      disableUserInfo: True
+      defaultScope: "openid email profile"
+      guiOrder: "1"
+      backchannelSupported: True
+    mappers:
+      - name: GivenNameMapper
+        config:
+          claim: given_name
+          user.attribute: firstName
+      - name: FamilyNameMapper
+        config:
+          claim: family_name
+          user.attribute: lastName
+      - name: UsernameMapper
+        identityProviderMapper: oidc-username-idp-mapper
+        config:
+          template: "${CLAIM.upn}"
+  - alias: idp
+    realm: "{{ sp_realm }}"
+    displayName: "Connexion avec un compte IDP"
+    providerId: oidc
+    firstBrokerLoginFlowAlias: "Test first broker login"
+    postBrokerLoginFlowAlias: "Test post broker login"
+    config:
+      openIdConfigurationUrl: "{{ idp_keycloak_url }}/auth/realms/{{ idp_realm }}/.well-known/openid-configuration"
+      clientId: sp
+      disableUserInfo: False
+      defaultScope: "openid email profile"
+      guiOrder: "2"
+      backchannelSupported: True
+    mappers: 
+      - name: FirstNameMapper
+        identityProviderMapper: oidc-user-attribute-idp-mapper
+        config:
+          claim: given_name
+          user.attribute: firstName
+      - name: LastNameMapper
+        identityProviderMapper: oidc-user-attribute-idp-mapper
+        config:
+          claim: family_name
+          user.attribute: lastName
+      - name: emailMapper
+        identityProviderMapper: oidc-user-attribute-idp-mapper
+        config:
+          claim: email
+          user.attribute: email
+
+keycloak_roles:
+  - name: sx5-admin
+    realm: "{{ sp_realm }}"
+    description: "Administrateurs"
+    composite: true
+    composites:
+      - clientId: realm-management
+        name: manage-clients
+      - clientId: realm-management
+        name: manage-users
+  - name: client-federation
+    realm: "{{ sp_realm }}"
+    description: "Role de confiduration des clients de la fédération"
+    composite: true
+    composites:
+      - clientId: realm-management
+        name: realm-admin
+  - name: BIOCH
+    realm: "{{ sp_realm }}"
+    description: "Biochimiste"
+  - name: DEN
+    realm: "{{ sp_realm }}"
+    description: "Dentiste"
+  - name: EXTMD
+    realm: "{{ sp_realm }}"
+    description: "Externe en médecine"
+  - name: MD
+    realm: "{{ sp_realm }}"
+    description: "Médecin"
+  - name: NPROF
+    realm: "{{ sp_realm }}"
+    description: "Non-professionnel"
+  - name: OPT
+    realm: "{{ sp_realm }}"
+    description: "Optométriste"
+  - name: PHARM
+    realm: "{{ sp_realm }}"
+    description: "Pharmacien"
+  - name: PO
+    realm: "{{ sp_realm }}"
+    description: "Podiatre"
+  - name: RES
+    realm: "{{ sp_realm }}"
+    description: "Résident en médecine"
+  - name: RM
+    realm: "{{ sp_realm }}"
+    description: "Sage-femme"
+  - name: CARM
+    realm: "{{ sp_realm }}"
+    description: "Candidate sage-femme"
+  - name: RN
+    realm: "{{ sp_realm }}"
+    description: "Infirmier – infirmière régulière ou praticienne spécialisée"
+  - name: LPN
+    realm: "{{ sp_realm }}"
+    description: "Infirmier – infirmière auxiliaire"
+  - name: RTR
+    realm: "{{ sp_realm }}"
+    description: "Technologue en imagerie médicale et en radio-oncologie"
+  - name: RRT
+    realm: "{{ sp_realm }}"
+    description: "Inhalothérapeute"
+        
+keycloak_idps_clients:
+  - clientId: sp
+    name: Service Provider
+    auth_keycloak_url: "{{ idp_keycloak_url }}"
+    auth_keycloak_user: "{{ keycloak_user }}"
+    auth_keycloak_password: "{{ keycloak_password }}"
+    realm: "{{ idp_realm }}"
+    rootUrl: "{{ keycloak_url }}/auth"
+    idp_realm: "{{ sp_realm }}"
+    idp_alias: IDP
+    publicClient: false
+    description: Fédération d'identité
+    redirectUris:
+      - "{{ keycloak_url }}/auth/realms/{{ sp_realm }}/broker/SantePublique/endpoint*"
+
+keycloak_users:
+  - auth_keycloak_url: "{{ keycloak_url }}"
+    auth_keycloak_user: "{{ keycloak_user }}"
+    auth_keycloak_password: "{{ keycloak_password }}"
+    realm: "{{ sp_realm }}"
+    username: admin1
+    firstName: Admin
+    lastName: Un
+    email: "nobody@inspq.qc.ca"
+    enabled: true
+    emailVerified: false
+    credentials:
+      - type: password
+        value: ASDASDASD
+        temporary: false
+    realmRoles:
+      - client-federation
+    state: present
+
+keycloak_clients:
+  - clientId: account
+    auth_keycloak_url: "{{ keycloak_url }}"
+    auth_keycloak_user: "{{ keycloak_user }}"
+    auth_keycloak_password: "{{keycloak_password}}"
+    realm: "{{ sp_realm }}"
+    defaultRoles:
+      - view-profile

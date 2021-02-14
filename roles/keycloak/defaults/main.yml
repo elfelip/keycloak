@@ -1,0 +1,54 @@
+---
+# defaults file for keycloak
+app_user: jboss
+app_user_id: 1000
+app_group: jboss
+app_group_id: 1000
+docker_registry: nexus3.inspq.qc.ca:5000
+delete_existing_container: false
+keycloak_image: '{{ docker_registry }}/inspq/keycloak'
+keycloak_image_version: latest
+keycloak_user: admin
+keycloak_password: admin
+keycloak_external_port: 18081
+keycloak_base_url: "{{ ansible_fqdn }}"
+keycloak_protocol: http
+keycloak_url: "{{ keycloak_protocol }}://{{ keycloak_base_url }}:{{ keycloak_external_port }}"
+keycloak_auth_client_id: admin-cli
+keycloak_auth_client_secret:
+keycloak_auth_realm: master
+
+keycloak_vhost_protocol: "{{ keycloak_protocol }}"
+keycloak_container_name: keycloak
+keycloak_loglevel: INFO
+keycloak_cert_path: certificats
+# Definir le repertoire de donnees de RedHat SSO
+#keycloak_data_dir: "{{ rhsso_base_dir }}/standalone/data"
+# Definir le repertoire de donnees de Keycloak
+keycloak_data_dir: "{{ keycloak_base_dir }}/standalone/data"
+
+# Pour reseau overlay et tcpping
+#keycloak_docker_network_name: keycloak
+#keycloak_docker_network_subnet: 192.168.122.0/28
+#keycloak_docker_network_driver: overlay
+#keycloak_cluster_initial_hosts: {{ keycloak_container_name }}_SERVEUR1.{{ keycloak_docker_network_name }}[7600],{{ keycloak_container_name }}_SERVEUR2.{{ keycloak_docker_network_name }}[7600],{{ keycloak_container_name }}_SERVEUR2.{{ keycloak_docker_network_name }}[7600]
+
+# Pour reseau macvlan
+#keycloak_docker_network_name: reseau_macvlan
+#keycloak_docker_network_driver: macvlan
+
+# Type de deploiement pour le conteneur. Peut être docker ou kubernetes. Seul Docker est supporté pour le moment
+keycloak_container_type: docker
+
+# Variables pour Kubernetes
+keycloak_kube_namespace: keycloak
+keycloak_kube_app_name: keycloak
+keycloak_kube_service_name: service-{{ keycloak_kube_app_name }}
+keycloak_kube_service_port: 8080
+keycloak_kube_replicas: 1
+keycloak_kube_ingress_name: ingress-{{ keycloak_kube_app_name }}
+keycloak_kube_certificate_name: ""
+keycloak_kube_certificate_issuer: ""
+keycloak_kube_certificate_org: ""
+
+

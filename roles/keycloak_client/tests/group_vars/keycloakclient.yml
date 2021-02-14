@@ -1,0 +1,11 @@
+keycloak_url: http://{{ ansible_fqdn }}:18081
+keycloak_user: admin
+keycloak_password: admin
+keycloak_auth_realm: master
+auth_client_id: admin-cli
+oidc_realm: master
+oidc_client_id: test_client
+oidc_client_name: test_client
+oidc_client_description: "Client de test"
+oidc_client_attributes:
+  "client_credentials.use_refresh_token": "true"

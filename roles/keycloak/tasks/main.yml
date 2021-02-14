@@ -1,0 +1,367 @@
+---
+# tasks file for keycloak
+- name: Definir le repertoire du volume externe de Keycloak si c'est le cas
+  set_fact:
+    keycloak_volumes:
+    - "{{ keycloak_data_volume }}:{{ keycloak_data_dir }}:Z"
+  when: keycloak_data_volume is defined and keycloak_data_dir is defined
+
+- name: Définir la variable de proxy
+  set_fact:
+    keycloak_proxy_address_forwarding: "true"
+  when: keycloak_base_url is defined and keycloak_base_url | length > 0
+
+
+- name: Ajouter le nom d'hôte au nom du conteneur si HA
+  set_fact:
+    keycloak_complete_container_name: "{{ keycloak_container_name }}_{{ ansible_hostname }}"
+  when: keycloak_ha_config is defined and keycloak_ha_config | length > 0 and keycloak_container_type == 'docker'
+
+- name: Ne rien ajouter au nom du conteneur si standalone
+  set_fact:
+    keycloak_complete_container_name: "{{ keycloak_container_name }}"
+  when: keycloak_ha_config is not defined or keycloak_ha_config | length == 0
+
+- name: Definir les variables d'environnement
+  set_fact:
+    keycloak_container_env:
+      KEYCLOAK_USER: "{{ keycloak_user }}"
+      KEYCLOAK_PASSWORD: "{{ keycloak_password }}"
+      KEYCLOAK_LOGLEVEL: "{{ keycloak_loglevel }}"
+      KEYCLOAK_CONFIG: "{{ keycloak_config | default() }}"
+      KEYCLOAK_HA_CONFIG: "{{ keycloak_ha_config | default() }}"
+      DB_ADDR: "{{ keycloak_db_addr | default(omit) }}"
+      DB_PORT: "{{ keycloak_db_port | default(omit) }}"
+      DB_DATABASE: "{{ keycloak_db_database | default(omit) }}"
+      DB_SCHEMA: "{{ keycloak_db_schema | default(omit) }}"
+      DB_URL: "{{ keycloak_db_url | default() }}"
+      DB_USERNAME: "{{ keycloak_db_username | default() }}"
+      DB_USER: "{{ keycloak_db_username | default() }}"
+      DB_PASSWORD: "{{ keycloak_db_password | default() }}"
+      HIBERNATE_DIALECT: "{{ keycloak_hibernate_dialect | default() }}"
+      DB_VENDOR: "{{ keycloak_db_vendor | default(omit) }}"
+      KEYCLOAK_DB_DRIVER: "{{ keycloak_db_driver | default() }}"
+      GRAYLOG_HOST_BASE: "{{ keycloak_complete_container_name | default() }}"
+      GRAYLOG_URL: "{{ keycloak_graylog_host | default() }}"
+      GRAYLOG_PORT:  "{{ keycloak_graylog_gelf_udp | default() | string }}"
+      GRAYLOG_ROTATE_SIZE: "{{ keycloak_graylog_rotate_size | default() | string }}"
+      GRAYLOG_NB_FILE: "{{ keycloak_graylog_nb_file | default() | string }}"
+      GRAYLOG_LOG_FILE: "{{ keycloak_graylog_log_file | default() }}"
+      KEYCLOAK_DEBUG_PORT: "{{ keycloak_debug_port | default() }}"
+      CLUSTER_INITIAL_HOSTS: "{{ keycloak_cluster_initial_hosts | default() }}"
+      PROXY_ADDRESS_FORWARDING: "{{ keycloak_proxy_address_forwarding | default('false') | string }}"
+
+- name: Configuration jgroups si nécessaire
+  set_fact:
+    keycloak_jgroups_env:
+      JGROUPS_DISCOVERY_PROTOCOL: "{{ keycloak_jgroups_discovery_protocols | default('JDBC_PING') }}"
+      JGROUPS_DISCOVERY_PROPERTIES: "{{ keycloak_jgroups_discovery_properties | default(omit) }}"
+  when: keycloak_ha_config is defined and keycloak_ha_config | length > 0
+
+- name: Ajouter config jgroups dans env si nécessaire
+  set_fact:
+    keycloak_container_jgroups_env: "{{ keycloak_container_env | combine(keycloak_jgroups_env | default({})) }}"
+
+- name: combiner les variables extra
+  set_fact:
+    keycloak_container_all_env: "{{ keycloak_container_jgroups_env | combine(keycloak_container_extra_env | default({})) }}"
+
+#- name: Debug ENV
+#  debug:
+#    var: keycloak_container_all_env
+    
+- name: Definir les mapping de port pour le mode standalone avec debug
+  set_fact:
+    keycloak_port_mappings:
+      - "{{ keycloak_external_port }}:{{ keycloak_internal_port }}"
+      - "{{ keycloak_debug_port | regex_replace('\\D', '') }}:{{ keycloak_debug_port | regex_replace('\\D', '') }}"
+  when: keycloak_debug_port is defined and keycloak_debug_port | string != "0" and keycloak_debug_port | string | length > 0
+
+- name: Definir les mapping de port pour le mode standalone sans debug
+  set_fact:
+    keycloak_port_mappings:
+      - "{{ keycloak_external_port }}:{{ keycloak_internal_port }}"
+  when: keycloak_port_mappings is not defined
+
+# Par feu
+- include_tasks: "parfeu.yml"
+  when: ansible_os_family == "RedHat" and keycloak_container_type == 'docker'
+
+# Création du réseau et des conteneurs pour un déploiement Docker
+- name: Déployer les conteneurs sous Docker si nécessaire
+  include_tasks: "docker.yml"
+  when: keycloak_container_type == 'docker'
+
+# Configuration Apache si en Docker
+- name: Configurer Apache si déploiement sous Docker
+  include_tasks: "apache.yml"
+  when: keycloak_container_type == 'docker'
+
+# Appliquer le manifes si déploiement Kubernetes
+- name: Déploiement du manifest Kubernetes si nécessaire
+  include_tasks: "kubernetes.yml"
+  when: keycloak_container_type == 'kubernetes'
+
+- name: Attendre que le serveur keycloak soit disponible
+  uri:
+    url: "{{ keycloak_url }}/auth/admin/"
+    status_code: 200
+    validate_certs: no
+  register: result
+  until: result.status == 200
+  retries: 5
+  delay: 60
+
+- name: Creer les REALMs
+  elfelip.keycloak.keycloak_realm:
+    auth_client_id: "{{ item.keycloak_auth_client_id | default(keycloak_auth_client_id) }}"
+    auth_client_secret: "{{ item.keycloak_auth_client_secret | default(keycloak_auth_client_secret) }}"
+    auth_realm: "{{ item.keycloak_auth_realm | default(keycloak_auth_realm) }}"
+    auth_keycloak_url: "{{ item.keycloak_url | default(keycloak_url) }}/auth"
+    auth_username: "{{ item.keycloak_user | default(keycloak_user) }}"
+    auth_password: "{{ item.keycloak_password | default(keycloak_password) }}"
+    realm: "{{ item.realm }}"
+    name: "{{ item.name }}"
+    namehtml: "{{ item.namehtml }}"
+    loginTheme: "{{ item.loginTheme | default(omit) }}"
+    adminTheme: "{{ item.adminTheme | default(omit) }}"
+    emailTheme: "{{ item.emailTheme | default(omit) }}"
+    accountTheme: "{{ item.accountTheme | default(omit) }}"
+    bruteForceProtected: "{{ item.bruteForceProtected | default(omit) }}"
+    loginWithEmailAllowed: "{{ item.loginWithEmailAllowed | default(omit) }}"
+    resetPasswordAllowed: "{{ item.resetPasswordAllowed | default(omit) }}"
+    passwordPolicy: "{{ item.passwordPolicy | default(omit) }}"
+    duplicateEmailsAllowed: "{{ item.duplicateEmailsAllowed | default(omit) }}"
+    verifyEmail: "{{ item.verifyEmail | default(omit) }}"
+    permanentLockout: "{{ item.permanentLockout | default(omit) }}"
+    maxFailureWaitSeconds: "{{ item.maxFailureWaitSeconds | default(omit) }}"
+    minimumQuickLoginWaitSeconds: "{{ item.minimumQuickLoginWaitSeconds | default(omit) }}"
+    waitIncrementSeconds: "{{ item.waitIncrementSeconds | default(omit) }}"
+    quickLoginCheckMilliSeconds: "{{ item.quickLoginCheckMilliSeconds | default(omit) }}"
+    maxDeltaTimeSeconds: "{{ item.maxDeltaTimeSeconds | default(omit) }}"
+    failureFactor: "{{ item.failureFactor | default(omit) }}"
+    supportedLocales: "{{ item.supportedLocales | default(omit) }}"
+    defaultLocale: "{{ item.defaultLocale | default(omit) }}"
+    accessTokenLifespan: "{{ item.accessTokenLifespan | default(omit) }}"
+    accessCodeLifespanUserAction: "{{ item.accessCodeLifespanUserAction | default(omit) }}"
+    actionTokenGeneratedByUserLifespan: "{{ item.actionTokenGeneratedByUserLifespan | default(omit) }}"
+    smtpServer: "{{ item.smtpserver | default(omit) }}"
+    eventsExpiration: "{{ item.eventsExpiration | default(omit) }}"
+    eventsConfig: "{{ item.eventsConfig | default(omit) }}"
+    state : "{{ item.state | default('present') }}"
+  with_items: "{{ keycloak_realms }}"
+  register: realms
+  when: keycloak_realms is defined
+  run_once: true
+  #no_log: true
+
+- name: Creer les flux authentification
+  elfelip.keycloak.keycloak_authentication:
+    auth_client_id: "{{ item.keycloak_auth_client_id | default(keycloak_auth_client_id) }}"
+    auth_client_secret: "{{ item.keycloak_auth_client_secret | default(keycloak_auth_client_secret) }}"
+    auth_realm: "{{ item.keycloak_auth_realm | default(keycloak_auth_realm) }}"
+    auth_keycloak_url: "{{ item.keycloak_url | default(keycloak_url) }}/auth"
+    auth_username: "{{ item.keycloak_user | default(keycloak_user) }}"
+    auth_password: "{{ item.keycloak_password | default(keycloak_password) }}"
+    realm: "{{ item.realm }}"
+    alias: "{{ item.alias }}"
+    copyFrom: "{{ item.copyFrom | default(omit) }}"
+    providerId: "{{ item.providerId | default(omit) }}"
+    authenticationConfig: "{{ item.authenticationConfig  | default(omit) }}"
+    authenticationExecutions: "{{ item.authenticationExecutions  | default(omit) }}"
+    state : "{{ item.state | default('present') }}"
+  with_items: "{{ keycloak_authentication_flows }}"
+  register: authentication_flows
+  when: keycloak_authentication_flows is defined
+  run_once: true
+  no_log: true
+
+- name: Creer les identity providers
+  elfelip.keycloak.keycloak_identity_provider:
+    auth_client_id: "{{ item.keycloak_auth_client_id | default(keycloak_auth_client_id) }}"
+    auth_client_secret: "{{ item.keycloak_auth_client_secret | default(keycloak_auth_client_secret) }}"
+    auth_realm: "{{ item.keycloak_auth_realm | default(keycloak_auth_realm) }}"
+    auth_keycloak_url: "{{ item.keycloak_url | default(keycloak_url) }}/auth"
+    auth_username: "{{ item.keycloak_user | default(keycloak_user) }}"
+    auth_password: "{{ item.keycloak_password | default(keycloak_password) }}"
+    realm: "{{ item.realm }}"
+    alias: "{{ item.alias }}"
+    displayName: "{{ item.displayName }}"
+    providerId: "{{ item.providerId }}"
+    firstBrokerLoginFlowAlias: "{{ item.firstBrokerLoginFlowAlias | default(omit) }}"
+    postBrokerLoginFlowAlias: "{{ item.postBrokerLoginFlowAlias | default(omit) }}"
+    config: "{{ item.config | default(omit) }}"
+    mappers: "{{ item.mappers | default(omit) }}"
+    state : "{{ item.state | default('present') }}"
+  with_items: "{{ keycloak_idps }}"
+  register: idps
+  when: keycloak_idps is defined
+  run_once: true
+  #no_log: true
+
+- name: Creer les clients pour les IdP keycloak
+  elfelip.keycloak.keycloak_client:
+    auth_client_id: "{{ item.keycloak_auth_client_id | default(keycloak_auth_client_id) }}"
+    auth_client_secret: "{{ item.keycloak_auth_client_secret | default(keycloak_auth_client_secret) }}"
+    auth_realm: "{{ item.keycloak_auth_realm | default(keycloak_auth_realm) }}"
+    auth_keycloak_url: "{{ item.keycloak_url | default(keycloak_url) }}/auth"
+    auth_username: "{{ item.keycloak_user | default(keycloak_user) }}"
+    auth_password: "{{ item.keycloak_password | default(keycloak_password) }}"
+    realm: "{{ item.realm }}"
+    clientId: "{{ item.clientId }}"
+    name: "{{ item.name | default(omit) }}"
+    rootUrl: "{{ item.rootUrl | default(omit) }}"
+    description: "{{ item.description | default(omit) }}"
+    redirectUris: "{{ item.redirectUris | default(omit) }}"
+    webOrigins: "{{ item.webOrigins | default(omit) }}"
+    protocolMappers: "{{ item.protocolMappers | default(omit) }}"
+    roles: "{{ item.roles | default(omit) }}"
+    publicClient: "{{ item.publicClient | default(false) }}"
+    state : "{{ item.state | default('present') }}"
+  with_items: "{{ keycloak_idps_clients }}"
+  register: idp_clients
+  when: keycloak_idps_clients is defined
+  run_once: true
+  #no_log: true
+
+- name: Creer les roles
+  elfelip.keycloak.keycloak_role:
+    auth_client_id: "{{ item.keycloak_auth_client_id | default(keycloak_auth_client_id) }}"
+    auth_client_secret: "{{ item.keycloak_auth_client_secret | default(keycloak_auth_client_secret) }}"
+    auth_realm: "{{ item.keycloak_auth_realm | default(keycloak_auth_realm) }}"
+    auth_keycloak_url: "{{ item.keycloak_url | default(keycloak_url) }}/auth"
+    auth_username: "{{ item.keycloak_user | default(keycloak_user) }}"
+    auth_password: "{{ item.keycloak_password | default(keycloak_password) }}"
+    realm: "{{ item.realm }}"
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    composite: "{{ item.composite | default(false) }}"
+    composites: "{{ item.composites | default(omit) }}"
+    state : "{{ item.state | default('present') }}"
+  with_items: "{{ keycloak_roles }}"
+  register: roles
+  when: keycloak_roles is defined
+  run_once: true
+  #no_log: true
+
+- name: idp_clients
+  debug:
+    var: idp_clients
+
+- name: Configurer le client secret pour les IdP internes
+  elfelip.keycloak.keycloak_identity_provider:
+    auth_client_id: "{{ item.keycloak_auth_client_id | default(keycloak_auth_client_id) }}"
+    auth_client_secret: "{{ item.keycloak_auth_client_secret | default(keycloak_auth_client_secret) }}"
+    auth_realm: "{{ item.keycloak_auth_realm | default(keycloak_auth_realm) }}"
+    auth_keycloak_url: "{{ item.keycloak_url | default(keycloak_url) }}/auth"
+    auth_username: "{{ item.keycloak_user | default(keycloak_user) }}"
+    auth_password: "{{ item.keycloak_password | default(keycloak_password) }}"
+    realm: "{{ item.item.idp_realm }}"
+    alias: "{{ item.item.idp_alias }}"
+    config:
+      clientId: "{{ item.end_state.clientId }}"
+      clientSecret: "{{ item.clientSecret.value }}"
+    state : "{{ item.state | default('present') }}"
+  with_items: "{{ idp_clients.results }}"
+  when: keycloak_idps_clients is defined and keycloak_idps is defined
+  run_once: true
+  no_log: true
+
+- name: Creer les clients définis dans l'inventaire
+  elfelip.keycloak.keycloak_client:
+    auth_client_id: "{{ item.keycloak_auth_client_id | default(keycloak_auth_client_id) }}"
+    auth_client_secret: "{{ item.keycloak_auth_client_secret | default(keycloak_auth_client_secret) }}"
+    auth_realm: "{{ item.keycloak_auth_realm | default(keycloak_auth_realm) }}"
+    auth_keycloak_url: "{{ item.keycloak_url | default(keycloak_url) }}/auth"
+    auth_username: "{{ item.keycloak_user | default(keycloak_user) }}"
+    auth_password: "{{ item.keycloak_password | default(keycloak_password) }}"
+    realm: "{{ item.realm }}"
+    clientId: "{{ item.clientId }}"
+    rootUrl: "{{ item.rootUrl | default(omit) }}"
+    baseUrl: "{{ item.baseUrl | default(omit) }}"
+    name: "{{ item.name | default(omit) }}"
+    description: "{{ item.description | default(omit) }}"
+    redirectUris: "{{ item.redirectUris | default(omit) }}"
+    webOrigins: "{{ item.webOrigins | default([]) }}"
+    protocolMappers: "{{ item.protocolMappers | default(omit) }}"
+    defaultRoles: "{{ item.defaultRoles | default(omit) }}"
+    roles: "{{ item.roles | default([]) }}"
+    publicClient: "{{ item.publicClient | default(false) }}"
+    state : "{{ item.state | default('present') }}"
+  with_items: "{{ keycloak_clients }}"
+  register: clients
+  when: keycloak_clients is defined
+  run_once: true
+  #no_log: true
+
+- name: Creer les components definis dans l'inventaire
+  elfelip.keycloak.keycloak_component:
+    auth_client_id: "{{ item.keycloak_auth_client_id | default(keycloak_auth_client_id) }}"
+    auth_client_secret: "{{ item.keycloak_auth_client_secret | default(keycloak_auth_client_secret) }}"
+    auth_realm: "{{ item.keycloak_auth_realm | default(keycloak_auth_realm) }}"
+    auth_keycloak_url: "{{ item.keycloak_url | default(keycloak_url) }}/auth"
+    auth_username: "{{ item.keycloak_user | default(keycloak_user) }}"
+    auth_password: "{{ item.keycloak_password | default(keycloak_password) }}"
+    realm: "{{ item.realm }}"
+    name: "{{ item.name }}"
+    parentId: "{{ item.parentId }}"
+    providerId: "{{ item.providerId }}"
+    providerType: "{{ item.providerType }}"
+    config: "{{ item.config }}"
+    subComponents: "{{ item.subComponents | default(omit) }}"
+    syncUserStorage: "{{ item.syncUserStorage | default(omit) }}"
+    syncLdapMappers: "{{ item.syncLdapMappers | default(omit) }}"
+    state : "{{ item.state | default('present') }}"
+  with_items: "{{ keycloak_components }}"
+  register: components
+  when: keycloak_components is defined
+  run_once: true
+  #no_log: true
+
+- name: Creer les groupes definis dans l'inventaire
+  elfelip.keycloak.keycloak_group:
+    auth_client_id: "{{ item.keycloak_auth_client_id | default(keycloak_auth_client_id) }}"
+    auth_client_secret: "{{ item.keycloak_auth_client_secret | default(keycloak_auth_client_secret) }}"
+    auth_realm: "{{ item.keycloak_auth_realm | default(keycloak_auth_realm) }}"
+    auth_keycloak_url: "{{ item.keycloak_url | default(keycloak_url) }}/auth"
+    auth_username: "{{ item.keycloak_user | default(keycloak_user) }}"
+    auth_password: "{{ item.keycloak_password | default(keycloak_password) }}"
+    realm: "{{ item.realm }}"
+    name: "{{ item.name }}"
+    realmRoles: "{{ item.realmRoles | default(omit) }}"
+    clientRoles: "{{ item.clientRoles | default(omit) }}"
+    attributes: "{{ item.attributes | default(omit) }}"
+    state : "{{ item.state | default('present') }}"
+  with_items: "{{ keycloak_groups }}"
+  register: the_groups
+  when: keycloak_groups is defined
+  run_once: true
+  #no_log: true
+
+- name: Creer les users définis dans l'inventaire
+  elfelip.keycloak.keycloak_user:
+    auth_client_id: "{{ item.keycloak_auth_client_id | default(keycloak_auth_client_id) }}"
+    auth_client_secret: "{{ item.keycloak_auth_client_secret | default(keycloak_auth_client_secret) }}"
+    auth_realm: "{{ item.keycloak_auth_realm | default(keycloak_auth_realm) }}"
+    auth_keycloak_url: "{{ item.keycloak_url | default(keycloak_url) }}/auth"
+    auth_username: "{{ item.keycloak_user | default(keycloak_user) }}"
+    auth_password: "{{ item.keycloak_password | default(keycloak_password) }}"
+    realm: "{{ item.realm }}"
+    username: "{{ item.username }}"
+    firstName: "{{ item.firstName }}"
+    lastName: "{{ item.lastName }}"
+    email: "{{ item.email }}"
+    enabled: "{{ item.enabled }}"
+    emailVerified: "{{ item.emailVerified }}"
+    credentials: "{{ item.credentials | default([]) }}"
+    attributes: "{{ item.attributes | default(omit) }}"
+    groups: "{{ item.groups | default([]) }}"
+    federatedIdentities: "{{ item.federatedIdentities | default([]) }}"
+    realmRoles: "{{ item.realmRoles | default([]) }}"
+    clientRoles: "{{ item.clientRoles | default(omit) }}"
+    state : "{{ item.state | default('present') }}"
+  with_items: "{{ keycloak_users }}"
+  register: users
+  when: keycloak_users is defined
+  run_once: true
+#  no_log: true

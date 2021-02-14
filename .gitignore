@@ -1,0 +1,10 @@
+tests/output
+*.tar.gz
+*venv
+.noseids
+.vscode/
+**/nosetests*.xml
+collections
+*.swp
+**/__pycache__/
+*.code-workspace

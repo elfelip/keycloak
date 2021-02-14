@@ -1,0 +1,5 @@
+---
+- hosts: keycloakclient
+  remote_user: root
+  roles:
+    - keycloak_client

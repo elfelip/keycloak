@@ -1,0 +1,11 @@
+---
+# vars file for keycloak
+app: keycloak
+keycloak_internal_port: 8080
+keycloak_internal_ssl_port: 8443
+keycloak_base_dir: /opt/jboss/keycloak
+rhsso_base_dir: /opt/jboss/rh-sso-7.2
+cert_file_path: /etc/pki/tls/certs
+cert_key_path: /etc/pki/tls/private
+
+apache_default_virtualhost: true

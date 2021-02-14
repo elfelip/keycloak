@@ -1,0 +1,10 @@
+- name: Générer le manifest sur kubernetes
+  template:
+    src: kubernetes/keycloak.yaml.j2
+    dest: /tmp/keycloak.yaml
+
+- name: Déployer le manifest sur kubernetes
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'kubernetes/keycloak.yaml.j2') }}"
+  
