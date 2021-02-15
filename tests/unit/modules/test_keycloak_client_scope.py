@@ -149,7 +149,7 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
         created_scope = ClientScope(
             rep=results.exception.args[0]['client_scope'])
         self.assertFalse(
-            scope.changed(created_scope),
+            scope.need_change(created_scope),
             "asked: {}, created: {}".format(
                 str(scope.getRepresentation()),
                 str(created_scope.getRepresentation())))
@@ -177,7 +177,7 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
         )
 
         self.assertTrue(
-            scope.changed(updated_scope),
+            scope.need_change(updated_scope),
             "Client scope has not change. asked: {}, created: {}".format(
                 str(scope.getRepresentation()),
                 str(updated_scope.getRepresentation())))
@@ -212,7 +212,7 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
             'Included client audience prodocol mapper config has not been updated: {}'.format(
                 updated_scope.protocolMappers[0].config['included.client.audience']))
         self.assertFalse(
-            scope.changed(updated_scope),
+            scope.need_change(updated_scope),
             "Client scope has not change. asked: {}, created: {}".format(
                 str(scope.getRepresentation()),
                 str(updated_scope.getRepresentation())))
@@ -236,7 +236,7 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
             'Id token claim prodocol mapper config has not been updated: {}'.format(
                 updated_scope.protocolMappers[0].config['id.token.claim']))
         self.assertFalse(
-            scope.changed(updated_scope),
+            scope.need_change(updated_scope),
             "Client scope has not change. asked: {}, created: {}".format(
                 str(scope.getRepresentation()),
                 str(updated_scope.getRepresentation())))
