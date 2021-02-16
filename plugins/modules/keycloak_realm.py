@@ -544,7 +544,7 @@ changed:
   type: bool
 '''
 
-from plugins.module_utils.keycloak import KeycloakAPI, \
+from ansible_collections.elfelip.keycloak.plugins.module_utils.keycloak import KeycloakAPI, \
     keycloak_argument_spec, get_token, KeycloakError, isDictEquals, remove_arguments_with_value_none
 from ansible.module_utils.basic import AnsibleModule
 

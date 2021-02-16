@@ -7,7 +7,7 @@
 
 from __future__ import absolute_import, division, print_function
 from ansible.module_utils.basic import AnsibleModule
-from plugins.module_utils.keycloak import KeycloakAPI, camel, \
+from ansible_collections.elfelip.keycloak.plugins.module_utils.keycloak import KeycloakAPI, camel, \
     keycloak_argument_spec, get_token, KeycloakError, isDictEquals, ClientScope, ProtocolMapper
 __metaclass__ = type
 
