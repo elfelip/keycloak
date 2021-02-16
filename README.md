@@ -88,19 +88,38 @@ If you want to develop new content for this collection or improve what's already
 
 The `tests` directory contains configuration for running sanity and integration tests using [`ansible-test`](https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html).
 
+To be able to run ansible-test, the project must be checked out in .../ansible_collections/{names;ace}/{colection}. In our case .../ansible-collections/elfelip/keycloak
+
+Prepare the workspace for integration test:
+Docker and Docker Compose need to be installed.
+Create and source a Python virtual env:
+
+  python3 -m venv kcvenv
+  source kcvenv/bin/activate
+
+Upgrade PIP and Ansible
+
+  python3 -m pip install pip --upgrade
+  python3 -m pip install ansible --upgrade
+
+Start Keycloak and LDAP server using tests/docker-compose.yml
+
+  cd tests
+  docker-compose up -d
+
 You can run the collection's test suites with the commands:
 
     ansible-test sanity --docker -v --color
-    ansible-test integration --docker -v --color
+    ansible-test integration --docker --docker-network tests_default -v --color
 
-## Testing mdules ait nosetest
+## Testing modules with nosetest
 
 You can Test modules using Keycloak and 389ds container with Python Nose. This enables debug/breakpoint fonctionnality.
 
 First, you need to create the containers:
 
-  docker run -d --rm --name testldap -p 10389:389 minkwe/389ds:latest
-  docker run -d --rm --name kctest -link testldap:testldap -p 18081:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin jboss/keycloak:latest
+  cd tests
+  docker-compose up -d
 
 Modules unit test cases may then be executed and debugged. The unit tests files are in the tests/unit/modules directory
 
