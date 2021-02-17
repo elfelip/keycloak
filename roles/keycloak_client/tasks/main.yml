@@ -26,7 +26,7 @@
     name: "{{ oidc_client_name }}"
     description: "{{ oidc_client_description }}"
     attributes: "{{ oidc_client_attributes }}"
-    redirectUris : "{{ oidc_client_redirectUris }}"
+    redirectUris: "{{ oidc_client_redirectUris }}"
     webOrigins: "{{ oidc_client_weborigins }}"
     bearerOnly: "{{ oidc_client_bearerOnly | default(omit)  }}"
     baseUrl: "{{ oidc_client_baseUrl | default(omit)  }}"

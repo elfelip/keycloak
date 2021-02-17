@@ -132,7 +132,7 @@ options:
         description:
             - If true, allows to remove client role and recreate it.
 extends_documentation_fragment:
-    - keycloak
+    - elfelip.keycloak.keycloak
 notes:
     - module does not modify role name.
 author:

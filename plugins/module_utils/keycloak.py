@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # Copyright (c) 2017, Eike Frost <ei@kefro.st>
 #
 # This code is part of Ansible, but is an independent component.
@@ -31,8 +34,8 @@ __metaclass__ = type
 
 import json
 import sys
-from six.moves.urllib.parse import quote, urlencode
-from six.moves.urllib.error import HTTPError
+from ansible.module_utils.six.moves.urllib.parse import quote, urlencode
+from ansible.module_utils.six.moves.urllib.error import HTTPError
 from ansible.module_utils.urls import open_url
 
 # from ansible.module_utils.six.moves.urllib.parse import urlencode
@@ -3966,8 +3969,8 @@ class KeycloakAPI(object):
             self.module.fail_json(
                 msg='Could not create client scope %s for realm %s: %s' %
                 (client_scope.name, realm, str(e)))
-        finally:
-            return postResponse
+
+        return postResponse
 
     def update_client_scope(self, client_scope, realm='master'):
         putResponse = None
@@ -4068,8 +4071,8 @@ class KeycloakAPI(object):
             self.module.fail_json(
                 msg='Could not update client scope %s for realm %s: %s' %
                 (client_scope.name, realm, str(e)))
-        finally:
-            return putResponse
+
+        return putResponse
 
 
 """
@@ -4116,8 +4119,8 @@ class ClientScope():
             name=None,
             description=None,
             protocol="openid-connect",
-            attributes={},
-            protocolMappers=[],
+            attributes=None,
+            protocolMappers=None,
             rep=None,
             module_params=None):
         if rep is not None:
@@ -4144,8 +4147,8 @@ class ClientScope():
             self.name = name
             self.description = description
             self.protocol = protocol
-            self.attributes = attributes
-            self.protocolMappers = protocolMappers
+            self.attributes = attributes if attributes is not None else {}
+            self.protocolMappers = protocolMappers if protocolMappers is not None else []
 
     def argument_spec(self):
         """
@@ -4194,24 +4197,25 @@ class ClientScope():
         rep['protocolMappers'] = mappers
         return rep
 
-    def fromRepresentation(self, rep={}):
-        for key in rep.keys():
-            if key == 'id':
-                self.id = rep[key]
-            elif key == 'name':
-                self.name = rep[key]
-            elif key == 'description':
-                self.description = rep[key]
-            elif key == 'protocol':
-                self.protocol = rep[key]
-            elif key == 'attributes':
-                self.attributes = rep[key]
-            elif key == 'protocolMappers':
-                self.protocolMappers = []
-                for mapper in rep[key]:
-                    self.protocolMappers.append(ProtocolMapper(rep=mapper))
-            elif key == 'state':
-                self.state = rep[key]
+    def fromRepresentation(self, rep=None):
+        if rep is not None:
+            for key in rep.keys():
+                if key == 'id':
+                    self.id = rep[key]
+                elif key == 'name':
+                    self.name = rep[key]
+                elif key == 'description':
+                    self.description = rep[key]
+                elif key == 'protocol':
+                    self.protocol = rep[key]
+                elif key == 'attributes':
+                    self.attributes = rep[key]
+                elif key == 'protocolMappers':
+                    self.protocolMappers = []
+                    for mapper in rep[key]:
+                        self.protocolMappers.append(ProtocolMapper(rep=mapper))
+                elif key == 'state':
+                    self.state = rep[key]
 
     def copy(self):
         client_scope_copy = ClientScope(
@@ -4309,7 +4313,7 @@ class ProtocolMapper():
             protocol="openid-connect",
             protocolMapper=None,
             consentRequired=False,
-            config={},
+            config=None,
             rep=None,
             module_params=None):
         if rep is not None:
@@ -4334,7 +4338,7 @@ class ProtocolMapper():
             self.protocol = protocol
             self.protocolMapper = protocolMapper
             self.consentRequired = consentRequired
-            self.config = config
+            self.config = config if config is not None else {}
 
     def argument_spec(self):
         """
@@ -4380,22 +4384,23 @@ class ProtocolMapper():
         rep['config'] = self.config
         return rep
 
-    def fromRepresentation(self, rep={}):
-        for key in rep.keys():
-            if key == 'id':
-                self.id = rep[key]
-            elif key == 'name':
-                self.name = rep[key]
-            elif key == 'protocol':
-                self.protocol = rep[key]
-            elif key == 'protocolMapper':
-                self.protocolMapper = rep[key]
-            elif key == 'consentRequired':
-                self.consentRequired = rep[key]
-            elif key == 'config':
-                self.config = rep[key]
-            elif key == 'state':
-                self.state = rep[key]
+    def fromRepresentation(self, rep=None):
+        if rep is not None:
+            for key in rep.keys():
+                if key == 'id':
+                    self.id = rep[key]
+                elif key == 'name':
+                    self.name = rep[key]
+                elif key == 'protocol':
+                    self.protocol = rep[key]
+                elif key == 'protocolMapper':
+                    self.protocolMapper = rep[key]
+                elif key == 'consentRequired':
+                    self.consentRequired = rep[key]
+                elif key == 'config':
+                    self.config = rep[key]
+                elif key == 'state':
+                    self.state = rep[key]
 
     def copy(self):
         mapper_copy = ProtocolMapper(rep=self.getRepresentation())

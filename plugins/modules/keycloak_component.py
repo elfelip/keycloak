@@ -18,8 +18,6 @@ module: keycloak_component
 
 short_description: Configure LDAP user storage component in Keycloak.
 
-version_added: "2.9"
-
 description:
     - This module creates, removes or update Keycloak component.
     - It can be use to create a LDAP and AD user federation to a realm in the Keycloak server
@@ -435,7 +433,7 @@ options:
         type: bool
         default: false
 extends_documentation_fragment:
-    - keycloak
+    - elfelip.keycloak.keycloak
 
 author:
     - Philippe Gauthier (@elfelip)

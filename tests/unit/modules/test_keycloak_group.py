@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 # This unit test class need a Keycloak server running on localhost using port 18081.
 # An admin user must exist and his password need to be admin.
 # It also need a 389-ds server running on port 10389 with the following OU:
@@ -11,6 +13,11 @@
 # Use the following command to run a Keycloak server with Docker:
 # docker run -d --rm --name testkc -p 18081:8080 --link testldap:testldap
 # -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin jboss/keycloak:latest
+
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
+
 import collections
 import os
 import unittest

@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
+
 from plugins.module_utils.keycloak import isDictEquals, get_token
 from plugins.modules import keycloak_role
 from tests.unit.module_utils.utils import AnsibleExitJson, AnsibleFailJson, ModuleTestCase, set_module_args

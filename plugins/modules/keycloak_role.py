@@ -20,7 +20,6 @@ short_description: Configure a role in Keycloak
 description:
     - This module creates, removes or update Keycloak realm level role.
     - For client level role, use keycloak_client module.
-version_added: "2.9"
 options:
     realm:
         description:
@@ -83,7 +82,7 @@ options:
         description:
             - If true, allows to remove role and recreate it.
 extends_documentation_fragment:
-    - keycloak
+    - elfelip.keycloak.keycloak
 notes:
     - module does not modify role name.
 author:

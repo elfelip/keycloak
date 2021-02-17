@@ -152,10 +152,13 @@ notes:
   they are not available through this module.
 
 extends_documentation_fragment:
-    - keycloak
+    - elfelip.keycloak.keycloak
 
 author:
     - Eike Frost (@eikef)
+    - Philippe Gauthier (@elfelip)
+    - Etienne Sadio (@moi8407)
+
 '''
 
 EXAMPLES = '''

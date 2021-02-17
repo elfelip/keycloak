@@ -220,7 +220,7 @@
     - name: "test21"
       identityProviderMapper: "oidc-user-attribute-idp-mapper"
       config:
-         claim : "test"
+         claim: "test"
          user.attribute: "lastname"
     - name: "test22"
       identityProviderMapper: "oidc-user-attribute-idp-mapper"

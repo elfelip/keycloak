@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
+
 import json
 import uuid
 import jwt
@@ -18,7 +25,7 @@ def mocked_requests_post(*args, **kwargs):
         "iat": round(time.time()),
         "auth_time": 1589482747,
         "jti": "2a11f9a0-5374-4d7e-a806-28e791327a0b",
-        "iss": "{}/realms/{}".format(keycloak_url, keycloak_auth_realm),
+        "iss": "{url}/realms/{realm}".format(url=keycloak_url, realm=keycloak_auth_realm),
         "aud": keycloak_auth_client_id,
         "sub": "b605d3a2-e9c8-408e-88e5-1eb9f7694e90",
         "typ": "ID",
@@ -40,9 +47,8 @@ def mocked_requests_post(*args, **kwargs):
         "jti": "4a8940b6-49cd-4abd-ac89-aeddbb629878",
         "exp": round(time.time()) + 1800,
         "nbf": 0,
-        "exp": round(time.time()),
-        "iss": "{}/realms/{}".format(keycloak_url, keycloak_auth_realm),
-        "aud": "{}/realms/{}".format(keycloak_url, keycloak_auth_realm),
+        "iss": "{url}/realms/{realm}".format(url=keycloak_url, realm=keycloak_auth_realm),
+        "aud": "{url}/realms/{realm}".format(url=keycloak_url, realm=keycloak_auth_realm),
         "sub": "4dabe12c-e44d-4cc6-bf04-750e7d38b9cb",
         "typ": "Refresh",
         "azp": keycloak_auth_client_id,
@@ -92,8 +98,8 @@ def mocked_requests_post(*args, **kwargs):
         def read(self):
             return self.content
 
-    if kwargs["url"] == "{}/realms/{}/protocol/openid-connect/token".format(
-            keycloak_url, keycloak_auth_realm):
+    if kwargs["url"] == "{url}/realms/{realm}/protocol/openid-connect/token".format(
+            url=keycloak_url, realm=keycloak_auth_realm):
         access_token = jwt.encode(
             decoded_access_token,
             jwt_secret,
@@ -138,7 +144,7 @@ def mocked_open_url(*args, **kwargs):
         "iat": round(time.time()),
         "auth_time": 1589482747,
         "jti": "2a11f9a0-5374-4d7e-a806-28e791327a0b",
-        "iss": "{}/realms/{}".format(keycloak_url, keycloak_auth_realm),
+        "iss": "{url}/realms/{realm}".format(url=keycloak_url, realm=keycloak_auth_realm),
         "aud": keycloak_auth_client_id,
         "sub": "b605d3a2-e9c8-408e-88e5-1eb9f7694e90",
         "typ": "ID",
@@ -160,9 +166,8 @@ def mocked_open_url(*args, **kwargs):
         "jti": "4a8940b6-49cd-4abd-ac89-aeddbb629878",
         "exp": round(time.time()) + 1800,
         "nbf": 0,
-        "exp": round(time.time()),
-        "iss": "{}/realms/{}".format(keycloak_url, keycloak_auth_realm),
-        "aud": "{}/realms/{}".format(keycloak_url, keycloak_auth_realm),
+        "iss": "{url}/realms/{realm}".format(url=keycloak_url, realm=keycloak_auth_realm),
+        "aud": "{url}/realms/{realm}".format(url=keycloak_url, realm=keycloak_auth_realm),
         "sub": "4dabe12c-e44d-4cc6-bf04-750e7d38b9cb",
         "typ": "Refresh",
         "azp": keycloak_auth_client_id,
@@ -212,8 +217,8 @@ def mocked_open_url(*args, **kwargs):
         def read(self):
             return self.content
 
-    if args[0] == "{}/realms/{}/protocol/openid-connect/token".format(
-            keycloak_url, keycloak_auth_realm) and kwargs["method"] == 'POST':
+    if args[0] == "{url}/realms/{realm}/protocol/openid-connect/token".format(
+            url=keycloak_url, realm=keycloak_auth_realm) and kwargs["method"] == 'POST':
         access_token = jwt.encode(
             decoded_access_token,
             jwt_secret,

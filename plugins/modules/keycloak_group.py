@@ -36,8 +36,6 @@ description:
     - When updating a group, where possible provide the group ID to the module. This removes a lookup
       to the API to translate the name into the group ID.
 
-version_added: "2.8"
-
 options:
     state:
         description:
@@ -89,13 +87,10 @@ options:
                 description:
                     - Value of the attribute
                 type: str
-        version_added: 2.9
-
     realmRoles:
         type: list
         description:
             - List of realm roles to assign to the group.
-        version_added: 2.9
     clientRoles:
         type: list
         description:
@@ -109,12 +104,10 @@ options:
                 type: list
                 description:
                     - List of roles for this client to assing to group
-        version_added: 2.9
     path:
         description:
             Group path
         type: str
-        version_added: 2.9
     syncLdapMappers:
         type: bool
         description:
@@ -122,22 +115,21 @@ options:
             - All user storages defined as user federation will be synchronized.
             - A sync is done from LDAP to Keycloak before doing the job and from Keycloak to LDAP after.
         default: False
-        version_added: 2.9
     force:
         type: bool
         description:
             - If true and the group already exist on the Keycloak server, it will be deleted and re-created with the new specification.
         default: False
-        version_added: 2.9
 notes:
     - Presently, the I(access) attribute returned by the Keycloak API is read-only for groups.
       This version of this module now support the I(realmRoles), I(clientRoles) as read-write attributes.
 
 extends_documentation_fragment:
-    - keycloak
+    - elfelip.keycloak.keycloak
 
 author:
     - Adam Goossens (@adamgoossens)
+    - Philippe Gauthier (@elfelip)
 '''
 
 EXAMPLES = '''

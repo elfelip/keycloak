@@ -50,5 +50,3 @@ keycloak_kube_ingress_name: ingress-{{ keycloak_kube_app_name }}
 keycloak_kube_certificate_name: ""
 keycloak_kube_certificate_issuer: ""
 keycloak_kube_certificate_org: ""
-
-

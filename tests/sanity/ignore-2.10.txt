@@ -1,0 +1,2 @@
+Jenkinsfile shebang
+roles/keycloak/tests/CLUSTER/testpostgres.sh shebang

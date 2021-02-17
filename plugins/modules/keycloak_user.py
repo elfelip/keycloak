@@ -163,7 +163,7 @@ options:
         type: bool
         default: false
 extends_documentation_fragment:
-    - keycloak
+    - elfelip.keycloak.keycloak
 notes:
     - module does not modify userId.
 author:

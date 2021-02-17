@@ -19,7 +19,6 @@ module: keycloak_realm
 short_description: Configure a realm in Keycloak
 description:
   - This module creates, removes or update Keycloak realms.
-version_added: "2.9"
 options:
     adminTheme:
         description:
@@ -469,7 +468,7 @@ options:
         default: 60
         type: int
 extends_documentation_fragment:
-    - keycloak
+    - elfelip.keycloak.keycloak
 notes:
   - module does not modify realm name.
 author:

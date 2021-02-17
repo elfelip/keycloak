@@ -1,9 +1,15 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 # This unit test class need a Keycloak server running on localhost using port 18081.
 # An admin user must exist and his password need to be admin.
 # Use the following command to run a Keycloak server with Docker:
 # docker run -d --rm --name testkc -p 18081:8080 -e KEYCLOAK_USER=admin -e
 # KEYCLOAK_PASSWORD=admin jboss/keycloak:latest
+
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
 
 from plugins.modules import keycloak_client
 from tests.unit.module_utils.utils import AnsibleExitJson, AnsibleFailJson, ModuleTestCase, set_module_args
@@ -201,8 +207,6 @@ class KeycloakClientTestCase(ModuleTestCase):
                     "name": "Client to delete",
                     "description": "this client should have been deleted",
                     "rootUrl": "http://test.com:8080",
-                    "name": "basetestname",
-                    "description": "Base testing",
                     "publicClient": False,
                     "force": False},
                    {"auth_keycloak_url": "http://localhost:18081/auth",

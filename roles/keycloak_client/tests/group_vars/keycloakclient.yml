@@ -1,4 +1,4 @@
-keycloak_url: http://{{ ansible_fqdn }}:18081
+keycloak_url: http://keycloak:8080
 keycloak_user: admin
 keycloak_password: admin
 keycloak_auth_realm: master

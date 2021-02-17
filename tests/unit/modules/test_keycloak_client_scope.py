@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
+
 from plugins.module_utils.keycloak import ClientScope, isDictEquals, get_token
 from plugins.modules import keycloak_client_scope
 from tests.unit.module_utils.utils import AnsibleExitJson, AnsibleFailJson, ModuleTestCase, set_module_args
@@ -150,9 +157,9 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
             rep=results.exception.args[0]['client_scope'])
         self.assertFalse(
             scope.need_change(created_scope),
-            "asked: {}, created: {}".format(
-                str(scope.getRepresentation()),
-                str(created_scope.getRepresentation())))
+            "asked: {asked}, created: {created}".format(
+                asked=str(scope.getRepresentation()),
+                created=str(created_scope.getRepresentation())))
 
     def test_update_client_scope_description(self):
         toUpdate = self.testClientScopes[0].copy()
@@ -170,17 +177,17 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
         self.assertEquals(
             updated_scope.description,
             toUpdate['description'],
-            'Scope has not been updated: asked: {}, updated {}'.format(
-                updated_scope.description,
-                toUpdate['description']
+            'Scope has not been updated: asked: {asked}, updated {updated}'.format(
+                asked=updated_scope.description,
+                updated=toUpdate['description']
             )
         )
 
         self.assertTrue(
             scope.need_change(updated_scope),
-            "Client scope has not change. asked: {}, created: {}".format(
-                str(scope.getRepresentation()),
-                str(updated_scope.getRepresentation())))
+            "Client scope has not change. asked: {asked}, created: {created}".format(
+                asked=str(scope.getRepresentation()),
+                created=str(updated_scope.getRepresentation())))
 
     def test_update_client_scope_without_change(self):
         toUpdate = self.testClientScopes[0].copy()
@@ -209,13 +216,13 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
         self.assertEquals(
             updated_scope.protocolMappers[0].config['included.client.audience'],
             'account',
-            'Included client audience prodocol mapper config has not been updated: {}'.format(
+            'Included client audience prodocol mapper config has not been updated: {0}'.format(
                 updated_scope.protocolMappers[0].config['included.client.audience']))
         self.assertFalse(
             scope.need_change(updated_scope),
-            "Client scope has not change. asked: {}, created: {}".format(
-                str(scope.getRepresentation()),
-                str(updated_scope.getRepresentation())))
+            "Client scope has not change. asked: {asked}, created: {created}".format(
+                asked=str(scope.getRepresentation()),
+                created=str(updated_scope.getRepresentation())))
 
     def test_update_client_scope_protocol_mapper_id_token_claim(self):
         toUpdate = self.testClientScopes[0].copy()
@@ -233,13 +240,13 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
         self.assertEquals(
             updated_scope.protocolMappers[0].config['id.token.claim'],
             'false',
-            'Id token claim prodocol mapper config has not been updated: {}'.format(
+            'Id token claim prodocol mapper config has not been updated: {0}'.format(
                 updated_scope.protocolMappers[0].config['id.token.claim']))
         self.assertFalse(
             scope.need_change(updated_scope),
-            "Client scope has not change. asked: {}, created: {}".format(
-                str(scope.getRepresentation()),
-                str(updated_scope.getRepresentation())))
+            "Client scope has not change. asked: {asked}, created: {created}".format(
+                asked=str(scope.getRepresentation()),
+                created=str(updated_scope.getRepresentation())))
 
     def test_update_client_scope_add_protocol_mapper(self):
         toUpdate = self.testClientScopes[0].copy()
@@ -261,7 +268,7 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
         self.assertEquals(
             len(updated_scope.protocolMappers),
             2,
-            'Protocol Mapper not added to client scope: {}'.format(str(len(updated_scope.protocolMappers))))
+            'Protocol Mapper not added to client scope: {0}'.format(str(len(updated_scope.protocolMappers))))
 
     def test_update_client_scope_delete_protocol_mapper_remove(self):
         toUpdate = self.testClientScopes[0].copy()
@@ -279,7 +286,7 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
         self.assertEquals(
             len(updated_scope.protocolMappers),
             0,
-            'Protocol Mapper not deleted from client scope: {}'.format(str(len(updated_scope.protocolMappers))))
+            'Protocol Mapper not deleted from client scope: {0}'.format(str(len(updated_scope.protocolMappers))))
 
     def test_update_client_scope_delete_protocol_mapper_using_state_absent(
             self):
@@ -298,4 +305,4 @@ class KeycloakClientScopeTestCase(ModuleTestCase):
         self.assertEquals(
             len(updated_scope.protocolMappers),
             0,
-            'Protocol Mapper not deleted from client scope: {}'.format(str(len(updated_scope.protocolMappers))))
+            'Protocol Mapper not deleted from client scope: {0}'.format(str(len(updated_scope.protocolMappers))))

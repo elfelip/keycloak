@@ -1,5 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
 
 from unittest import TestCase, mock
 from plugins.module_utils.keycloak import get_token, get_service_account_token, KeycloakAPI, \
@@ -41,7 +45,7 @@ class KeycloakTestCase(TestCase):
         self.assertEqual(
             decoded_access_token["preferred_username"],
             self.keycloak_auth_user,
-            "L'utilisateur authentifié n'est pas le bon: {}".format(
+            "L'utilisateur authentifié n'est pas le bon: {0}".format(
                 decoded_access_token["preferred_username"]))
 
     @mock.patch('plugins.module_utils.keycloak.open_url',
@@ -63,7 +67,7 @@ class KeycloakTestCase(TestCase):
         self.assertEqual(
             decoded_access_token["preferred_username"],
             self.keycloak_auth_user,
-            "L'utilisateur authentifié n'est pas le bon: {}".format(
+            "L'utilisateur authentifié n'est pas le bon: {0}".format(
                 decoded_access_token["preferred_username"]))
 
     @mock.patch('plugins.module_utils.keycloak.open_url',
@@ -86,7 +90,7 @@ class KeycloakTestCase(TestCase):
         self.assertEqual(
             decoded_access_token["preferred_username"],
             self.keycloak_auth_user,
-            "L'utilisateur authentifié n'est pas le bon: {}".format(
+            "L'utilisateur authentifié n'est pas le bon: {0}".format(
                 decoded_access_token["preferred_username"]))
 
 
@@ -383,7 +387,7 @@ class ClientScopeRepresentationTestCase(TestCase):
         scope = ClientScope(rep=self.clientScopeTest)
         rep = scope.getRepresentation()
         self.assertEquals(
-            rep, self.clientScopeTest, "{} is not {}".format(
+            rep, self.clientScopeTest, "{0} is not {1}".format(
                 str(rep), str(
                     self.clientScopeTest)))
 

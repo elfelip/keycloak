@@ -19,7 +19,6 @@ module: keycloak_identity_provider
 short_description: Configure an identity provider in Keycloak
 description:
   - This module creates, removes or update Keycloak identity provider.
-version_added: "2.9"
 options:
   realm:
     description:
@@ -192,7 +191,7 @@ options:
     type: bool
     default: false
 extends_documentation_fragment:
-    - keycloak
+    - elfelip.keycloak.keycloak
 notes:
   - module does not modify identity provider alias.
 author:

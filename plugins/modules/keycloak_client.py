@@ -19,8 +19,6 @@ module: keycloak_client
 
 short_description: Allows administration of Keycloak clients via Keycloak API
 
-version_added: "2.5"
-
 description:
     - This module allows the administration of Keycloak clients via the Keycloak REST API. It
       requires access to the REST API via OpenID Connect; the user connecting and the client being
@@ -510,7 +508,6 @@ options:
                 type: str
                 choices: ["present","absent"]
                 default: "present"
-        version_added: "2.9"
     scope_mappings:
         description:
             - List scope mappings for the client.
@@ -562,17 +559,17 @@ options:
                                 choices: [absent, present]
                                 default: present
                                 type: str
-        version_added: "2.9"
     force:
         type: bool
         description:
             - If true, existing client will be deleted an re-created.
         default: False
-        version_added: "2.9"
 extends_documentation_fragment:
-    - keycloak
+    - elfelip.keycloak.keycloak
 author:
     - Eike Frost (@eikef)
+    - Philippe Gauthier (@elfelip)
+    - Etienne Sadio (@moi8407)
 '''
 
 EXAMPLES = '''
