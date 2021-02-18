@@ -170,8 +170,8 @@ options:
                 type: list
                 elements: str
                 choices:
-                    - ['true']
-                    - ['false']
+                    - 'true'
+                    - 'false'
             connectionPooling:
                 description:
                     - Does the Keycloak should use connection pooling for accessing the LDAP server?
@@ -180,8 +180,8 @@ options:
                 type: list
                 elements: str
                 choices:
-                    - ['true']
-                    - ['false']
+                    - 'true'
+                    - 'false'
             cachePolicy:
                 description:
                     - Cache policy for this user storage provider.
@@ -204,8 +204,8 @@ options:
                 type: list
                 elements: str
                 choices:
-                    - ['true']
-                    - ['false']
+                    - 'true'
+                    - 'false'
             allowKerberosAuthentication:
                 description:
                     - Enable or disable HTTP authentication of users with SPNEGO/Kerberos tokens.
@@ -214,8 +214,8 @@ options:
                 type: list
                 elements: str
                 choices:
-                    - ['true']
-                    - ['false']
+                    - 'true'
+                    - 'false'
             importEnabled:
                 description:
                     - If true, LDAP users are imported into the Keycloak database and synchronized.
@@ -224,8 +224,8 @@ options:
                 type: list
                 elements: str
                 choices:
-                    - ['true']
-                    - ['false']
+                    - 'true'
+                    - 'false'
             syncRegistrations:
                 description:
                     - If true, user created in the Keycloak server will be synchronized to LDAP.
@@ -234,8 +234,8 @@ options:
                 type: list
                 elements: str
                 choices:
-                    - ['true']
-                    - ['false']
+                    - 'true'
+                    - 'false'
             searchScope:
                 description:
                     - For one level, users will be searched in only the usersDn. If subtree,
@@ -264,8 +264,8 @@ options:
                 type: list
                 elements: str
                 choices:
-                    - ['true']
-                    - ['false']
+                    - 'true'
+                    - 'false'
             batchSizeForSync:
                 description:
                     - Count of LDAP users to be imported in a single transaction.
@@ -316,8 +316,8 @@ options:
                                 type: list
                                 elements: str
                                 choices:
-                                    - ['true']
-                                    - ['false']
+                                    - 'true'
+                                    - 'false'
                             read.only:
                                 description:
                                     - This is for user-attribute-ldap-mapper type.
@@ -327,8 +327,8 @@ options:
                                 type: list
                                 elements: str
                                 choices:
-                                    - ['true']
-                                    - ['false']
+                                    - 'true'
+                                    - 'false'
                             user.model.attribute:
                                 description:
                                     - This is for user-attribute-ldap-mapper type.
@@ -345,8 +345,8 @@ options:
                                 type: list
                                 elements: str
                                 choices:
-                                    - ['true']
-                                    - ['false']
+                                    - 'true'
+                                    - 'false'
                             mode:
                                 description:
                                     - This option is for group-ldap-mapper.
@@ -418,8 +418,8 @@ options:
                                 type: list
                                 elements: str
                                 choices:
-                                    - ['true']
-                                    - ['false']
+                                    - 'true'
+                                    - 'false'
                             groups.dn:
                                 description:
                                     - This option is for group-ldap-mapper.
@@ -443,8 +443,8 @@ options:
                                 type: list
                                 elements: str
                                 choices:
-                                    - ['true']
-                                    - ['false']
+                                    - 'true'
+                                    - 'false'
     syncUserStorage:
         description:
             - Type of user storage synchronization must be triggerd for
@@ -667,7 +667,7 @@ def main():
         connectionPooling=dict(type='list', elements='str', choices=['true', 'false']),
         cachePolicy=dict(type='list', elements='str', choices=['DEFAULT', 'EVICT_DAILY', 'EVICT_WEEKLY', 'MAX_LIFESPAN', 'NO_CACHE']),
         useKerberosForPasswordAuthentication=dict(type='list', elements='str', choices=['true', 'false']),
-        allowKerberosAuthentication=dict(type='list', elements='str', choices=[['true'], ['false']]),
+        allowKerberosAuthentication=dict(type='list', elements='str', choices=['true', 'false']),
         importEnabled=dict(type='list', elements='str', choices=['true', 'false']),
         syncRegistrations=dict(type='list', elements='str', choices=['true', 'false']),
         searchScope=dict(type='list', elements='str', choices=['1', '2']),
@@ -680,7 +680,7 @@ def main():
         "is.mandatory.in.ldap": {'type': 'list', 'elements': 'str', 'choices': ['true', 'false']},
         "read.only": {'type': 'list', 'elements': 'str', 'choices': ['true', 'false']},
         "user.model.attribute": {'type': 'list', 'elements': 'str'},
-        "always.read.value.from.ldap": {'type': 'list', 'elements': 'str', 'choices': [['true'], ['false']]},
+        "always.read.value.from.ldap": {'type': 'list', 'elements': 'str', 'choices': ['true', 'false']},
         'mode': {'type': 'list', 'elements': 'str', 'choices': ['LDAP_ONLY', 'READ_ONLY', 'IMPORT']},
         "membership.attribute.type": {'type': 'list', 'elements': 'str', 'choices': ['DN', 'UID']},
         "user.roles.retrieve.strategy": {'type': 'list', 'elements': 'str', 'choices': [

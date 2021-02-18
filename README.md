@@ -104,13 +104,25 @@ Upgrade PIP and Ansible
 
 Start Keycloak and LDAP server using tests/docker-compose.yml
 
-  cd tests
-  docker-compose up -d
+  docker-compose -f tests/docker-compose.yml up -d
 
 You can run the collection's test suites with the commands:
 
-    ansible-test sanity --docker -v --color
-    ansible-test integration --docker --docker-network tests_default -v --color
+Sanity check:
+
+  ansible-test sanity --docker -v --color
+
+Unit tests:
+
+   ansible-test units --python 3.8 -v --color
+
+Integration Tests:
+
+  ansible-test integration --docker --docker-network tests_default -v --color
+
+Tests servers can be stopped using this command:
+
+  docker-compose -f tests/docker-compose.yml down
 
 ## Testing modules with nosetest
 

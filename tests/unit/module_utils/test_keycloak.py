@@ -386,7 +386,7 @@ class ClientScopeRepresentationTestCase(TestCase):
     def test_NewClientScopeFromRepresentation(self):
         scope = ClientScope(rep=self.clientScopeTest)
         rep = scope.getRepresentation()
-        self.assertEquals(
+        self.assertEqual(
             rep, self.clientScopeTest, "{0} is not {1}".format(
                 str(rep), str(
                     self.clientScopeTest)))

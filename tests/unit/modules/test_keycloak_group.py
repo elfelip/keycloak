@@ -213,7 +213,7 @@ class KeycloakGroupTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]["group"]["name"],
             toCreate["name"],
             "name: " +
@@ -283,7 +283,7 @@ class KeycloakGroupTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]["group"]["name"],
             toCreate["name"],
             "name: " +
@@ -342,7 +342,7 @@ class KeycloakGroupTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]["group"]["name"],
             toCreate["name"],
             "name: " +
@@ -396,7 +396,7 @@ class KeycloakGroupTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertFalse(results.exception.args[0]['changed'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]["group"]["name"],
             self.groupNotChanged["name"],
             "name: " +
@@ -435,7 +435,7 @@ class KeycloakGroupTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]["group"]["name"],
             toDoNotChange["name"],
             "name: " +
@@ -495,7 +495,7 @@ class KeycloakGroupTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]["group"]["name"],
             self.modifyGroup["name"],
             "name: " +

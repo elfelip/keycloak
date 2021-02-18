@@ -166,7 +166,7 @@ class KeycloakAuthenticationTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]["flow"]["alias"],
             toCreate["alias"],
             results.exception.args[0]["flow"]["alias"] +
@@ -183,14 +183,14 @@ class KeycloakAuthenticationTestCase(ModuleTestCase):
                 "Execution " +
                 expectedExecutions["providerId"] +
                 " not found")
-            self.assertEquals(
+            self.assertEqual(
                 execution["requirement"],
                 expectedExecutions["requirement"],
                 execution["requirement"] +
                 " is not equals to " +
                 expectedExecutions["requirement"])
             for key in expectedExecutions["authenticationConfig"]["config"]:
-                self.assertEquals(
+                self.assertEqual(
                     expectedExecutions["authenticationConfig"]["config"][key],
                     execution["authenticationConfig"]["config"][key],
                     execution["authenticationConfig"]["config"][key] +
@@ -205,7 +205,7 @@ class KeycloakAuthenticationTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]["flow"]["alias"],
             toCreate["alias"],
             results.exception.args[0]["flow"]["alias"] +
@@ -222,14 +222,14 @@ class KeycloakAuthenticationTestCase(ModuleTestCase):
                 "Execution " +
                 expectedExecutions["providerId"] +
                 " not found")
-            self.assertEquals(
+            self.assertEqual(
                 execution["requirement"],
                 expectedExecutions["requirement"],
                 execution["requirement"] +
                 " is not equals to " +
                 expectedExecutions["requirement"])
             for key in expectedExecutions["authenticationConfig"]["config"]:
-                self.assertEquals(
+                self.assertEqual(
                     expectedExecutions["authenticationConfig"]["config"][key],
                     execution["authenticationConfig"]["config"][key],
                     execution["authenticationConfig"]["config"][key] +
@@ -243,7 +243,7 @@ class KeycloakAuthenticationTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]["flow"]["alias"],
             toCreate["alias"],
             results.exception.args[0]["flow"]["alias"] +
@@ -260,14 +260,14 @@ class KeycloakAuthenticationTestCase(ModuleTestCase):
                 "Execution " +
                 expectedExecutions["providerId"] +
                 " not found")
-            self.assertEquals(
+            self.assertEqual(
                 execution["requirement"],
                 expectedExecutions["requirement"],
                 execution["requirement"] +
                 " is not equals to " +
                 expectedExecutions["requirement"])
             for key in expectedExecutions["authenticationConfig"]["config"]:
-                self.assertEquals(
+                self.assertEqual(
                     expectedExecutions["authenticationConfig"]["config"][key],
                     execution["authenticationConfig"]["config"][key],
                     execution["authenticationConfig"]["config"][key] +
@@ -282,7 +282,7 @@ class KeycloakAuthenticationTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]["flow"]["alias"],
             toCreate["alias"],
             results.exception.args[0]["flow"]["alias"] +
@@ -299,14 +299,14 @@ class KeycloakAuthenticationTestCase(ModuleTestCase):
                 "Execution " +
                 expectedExecutions["providerId"] +
                 " not found")
-            self.assertEquals(
+            self.assertEqual(
                 execution["requirement"],
                 expectedExecutions["requirement"],
                 execution["requirement"] +
                 " is not equals to " +
                 expectedExecutions["requirement"])
             for key in expectedExecutions["authenticationConfig"]["config"]:
-                self.assertEquals(
+                self.assertEqual(
                     expectedExecutions["authenticationConfig"]["config"][key],
                     execution["authenticationConfig"]["config"][key],
                     execution["authenticationConfig"]["config"][key] +
@@ -332,7 +332,7 @@ class KeycloakAuthenticationTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]["flow"]["alias"],
             toModify["alias"],
             results.exception.args[0]["flow"]["alias"] +
@@ -349,14 +349,14 @@ class KeycloakAuthenticationTestCase(ModuleTestCase):
                 "Execution " +
                 expectedExecutions["providerId"] +
                 " not found")
-            self.assertEquals(
+            self.assertEqual(
                 execution["requirement"],
                 expectedExecutions["requirement"],
                 execution["requirement"] +
                 " is not equals to " +
                 expectedExecutions["requirement"])
             for key in expectedExecutions["authenticationConfig"]["config"]:
-                self.assertEquals(
+                self.assertEqual(
                     expectedExecutions["authenticationConfig"]["config"][key],
                     execution["authenticationConfig"]["config"][key],
                     execution["authenticationConfig"]["config"][key] +
@@ -377,7 +377,7 @@ class KeycloakAuthenticationTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]["flow"]["alias"],
             toModify["alias"],
             results.exception.args[0]["flow"]["alias"] +
@@ -394,14 +394,14 @@ class KeycloakAuthenticationTestCase(ModuleTestCase):
                 "Execution " +
                 expectedExecutions["providerId"] +
                 " not found")
-            self.assertEquals(
+            self.assertEqual(
                 execution["requirement"],
                 expectedExecutions["requirement"],
                 execution["requirement"] +
                 " is not equals to " +
                 expectedExecutions["requirement"])
             for key in expectedExecutions["authenticationConfig"]["config"]:
-                self.assertEquals(
+                self.assertEqual(
                     expectedExecutions["authenticationConfig"]["config"][key],
                     execution["authenticationConfig"]["config"][key],
                     execution["authenticationConfig"]["config"][key] +
@@ -415,7 +415,7 @@ class KeycloakAuthenticationTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
-        self.assertRegexpMatches(
+        self.assertRegex(
             results.exception.args[0]['msg'],
             'deleted',
             'authentication flow not deleted')
@@ -426,7 +426,7 @@ class KeycloakAuthenticationTestCase(ModuleTestCase):
         with self.assertRaises(AnsibleExitJson) as results:
             self.module.main()
         self.assertFalse(results.exception.args[0]['changed'])
-        self.assertRegexpMatches(
+        self.assertRegex(
             results.exception.args[0]['msg'],
             'absent',
             'authentication flow is not absent')

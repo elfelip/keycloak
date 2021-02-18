@@ -40,7 +40,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
                 "rdnLDAPAttribute": ["cn"],
                 "uuidLDAPAttribute": ["objectGUID"],
                 "userObjectClasses":["person, organizationalPerson, user"],
-                "connectionUrl":["ldap://ldap.server.com:389"],
+                "connectionUrl":["ldap://testldap:389"],
                 "usersDn":["OU=users,DC=ldap,DC=server,DC=com"],
                 "authType":["simple"],
                 "bindDn":["CN=toto,OU=users,DC=ldap,DC=server,DC=com"],
@@ -98,7 +98,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
                 "rdnLDAPAttribute": ["cn"],
                 "uuidLDAPAttribute": ["objectGUID"],
                 "userObjectClasses": ["person, organizationalPerson, user"],
-                "connectionUrl": ["ldap://ldap.server.com:389"],
+                "connectionUrl": ["ldap://testldap:389"],
                 "usersDn": ["OU=users,DC=ldap,DC=server,DC=com"],
                 "authType":["simple"],
                 "bindDn":["CN=toto,OU=users,DC=ldap,DC=server,DC=com"],
@@ -141,7 +141,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
                 "rdnLDAPAttribute": ["cn"],
                 "uuidLDAPAttribute": ["objectGUID"],
                 "userObjectClasses": ["person, organizationalPerson, user"],
-                "connectionUrl": ["ldap://ldap.server.com:389"],
+                "connectionUrl": ["ldap://testldap:389"],
                 "usersDn": ["OU=users,DC=ldap,DC=server,DC=com"],
                 "authType": ["simple"],
                 "bindDn": ["CN=toto,OU=users,DC=ldap,DC=server,DC=com"],
@@ -200,7 +200,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
                 "rdnLDAPAttribute": ["cn"],
                 "uuidLDAPAttribute": ["objectGUID"],
                 "userObjectClasses": ["person, organizationalPerson, user"],
-                "connectionUrl": ["ldap://ldap.server.com:389"],
+                "connectionUrl": ["ldap://testldap:389"],
                 "usersDn": ["OU=users,DC=ldap,DC=server,DC=com"],
                 "authType": ["simple"],
                 "bindDn": ["CN=toto,OU=users,DC=ldap,DC=server,DC=com"],
@@ -259,7 +259,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
                 "rdnLDAPAttribute": ["cn"],
                 "uuidLDAPAttribute": ["objectGUID"],
                 "userObjectClasses": ["person, organizationalPerson, user"],
-                "connectionUrl": ["ldap://ldap.server.com:389"],
+                "connectionUrl": ["ldap://testldap:389"],
                 "usersDn": ["OU=users,DC=ldap,DC=server,DC=com"],
                 "authType": ["simple"],
                 "bindDn": ["CN=toto,OU=users,DC=ldap,DC=server,DC=com"],
@@ -423,13 +423,13 @@ class KeycloakComponentTestCase(ModuleTestCase):
         self.assertTrue(results.exception.args[0]['changed'])
         self.assertTrue(
             "component" in results.exception.args[0] and results.exception.args[0]['component'] is not None)
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]['component']['name'],
             toCreate["name"],
             "name: " +
             results.exception.args[0]['component']['name'])
 
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]['component']['config']['vendor'][0],
             toCreate["config"]["vendor"][0],
             "vendor: " +
@@ -443,7 +443,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
         self.assertTrue(
             subComponentFound,
             "Sub component not found in the sub components")
-        self.assertEquals(
+        self.assertEqual(
             subComponent["config"]["groups.dn"][0],
             toCreate["subComponents"]["org.keycloak.storage.ldap.mappers.LDAPStorageMapper"][0]["config"]["groups.dn"][0],
             "groups.dn: " +
@@ -458,7 +458,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
         self.assertTrue(
             subComponentFound,
             "Sub component not found in the sub components")
-        self.assertEquals(
+        self.assertEqual(
             subComponent["config"]["groups.dn"][0],
             toCreate["subComponents"]["org.keycloak.storage.ldap.mappers.LDAPStorageMapper"][1]["config"]["groups.dn"][0],
             "groups.dn: " +
@@ -532,17 +532,17 @@ class KeycloakComponentTestCase(ModuleTestCase):
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
 
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]['component']['name'],
             toModify["name"],
             "name: " +
             results.exception.args[0]['component']['name'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]['component']['config']['vendor'][0],
             toModify['config']['vendor'][0],
             "vendor: " +
             results.exception.args[0]['component']['config']['vendor'][0])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]['component']['config']['connectionUrl'][0],
             toModify['config']['connectionUrl'][0],
             "connectionUrl: " +
@@ -556,7 +556,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
         self.assertTrue(
             subComponentFound,
             "Sub component not found in the sub components")
-        self.assertEquals(
+        self.assertEqual(
             subComponent["config"]["groups.dn"][0],
             toModify["subComponents"]["org.keycloak.storage.ldap.mappers.LDAPStorageMapper"][0]["config"]["groups.dn"][0],
             "groups.dn: " +
@@ -571,7 +571,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
         self.assertTrue(
             subComponentFound,
             "Sub component not found in the sub components")
-        self.assertEquals(
+        self.assertEqual(
             subComponent["config"]["groups.dn"][0],
             toModify["subComponents"]["org.keycloak.storage.ldap.mappers.LDAPStorageMapper"][1]["config"]["groups.dn"][0],
             "groups.dn: " +
@@ -585,7 +585,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
         self.assertTrue(
             subComponentFound,
             "Sub component not found in the sub components")
-        self.assertEquals(
+        self.assertEqual(
             subComponent["config"]["user.model.attribute"][0],
             toModify["subComponents"]["org.keycloak.storage.ldap.mappers.LDAPStorageMapper"][2]["config"]["user.model.attribute"][0],
             "user.model.attribute: " +
@@ -599,7 +599,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
         self.assertTrue(
             subComponentFound,
             "Sub component not found in the sub components")
-        self.assertEquals(
+        self.assertEqual(
             subComponent["config"]["user.model.attribute"][0],
             toModify["subComponents"]["org.keycloak.storage.ldap.mappers.LDAPStorageMapper"][3]["config"]["user.model.attribute"][0],
             "user.model.attribute: " +
@@ -614,17 +614,17 @@ class KeycloakComponentTestCase(ModuleTestCase):
             self.module.main()
         self.assertFalse(results.exception.args[0]['changed'])
 
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]['component']['name'],
             toModify['name'],
             "name: " +
             results.exception.args[0]['component']['name'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]['component']['config']['vendor'][0],
             toModify['config']['vendor'][0],
             "vendor: " +
             results.exception.args[0]['component']['config']['vendor'][0])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]['component']['config']['connectionUrl'][0],
             toModify['config']['connectionUrl'][0],
             "connectionUrl: " +
@@ -638,7 +638,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
         self.assertTrue(
             subComponentFound,
             "Sub component not found in the sub components")
-        self.assertEquals(
+        self.assertEqual(
             subComponent["config"]["groups.dn"][0],
             toModify["subComponents"]["org.keycloak.storage.ldap.mappers.LDAPStorageMapper"][0]["config"]["groups.dn"][0],
             "groups.dn: " +
@@ -653,7 +653,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
         self.assertTrue(
             subComponentFound,
             "Sub component not found in the sub components")
-        self.assertEquals(
+        self.assertEqual(
             subComponent["config"]["groups.dn"][0],
             toModify["subComponents"]["org.keycloak.storage.ldap.mappers.LDAPStorageMapper"][1]["config"]["groups.dn"][0],
             "groups.dn: " +
@@ -670,17 +670,17 @@ class KeycloakComponentTestCase(ModuleTestCase):
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
 
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]['component']['name'],
             toModify['name'],
             "name: " +
             results.exception.args[0]['component']['name'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]['component']['config']['vendor'][0],
             toModify['config']['vendor'][0],
             "vendor: " +
             results.exception.args[0]['component']['config']['vendor'][0])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]['component']['config']['connectionUrl'][0],
             toModify['config']['connectionUrl'][0],
             "connectionUrl: " +
@@ -694,7 +694,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
         self.assertTrue(
             subComponentFound,
             "Sub component not found in the sub components")
-        self.assertEquals(
+        self.assertEqual(
             subComponent["config"]["groups.dn"][0],
             toModify["subComponents"]["org.keycloak.storage.ldap.mappers.LDAPStorageMapper"][0]["config"]["groups.dn"][0],
             "groups.dn: " +
@@ -709,7 +709,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
         self.assertTrue(
             subComponentFound,
             "Sub component not found in the sub components")
-        self.assertEquals(
+        self.assertEqual(
             subComponent["config"]["groups.dn"][0],
             toModify["subComponents"]["org.keycloak.storage.ldap.mappers.LDAPStorageMapper"][1]["config"]["groups.dn"][0],
             "groups.dn: " +
@@ -800,17 +800,17 @@ class KeycloakComponentTestCase(ModuleTestCase):
             self.module.main()
         self.assertTrue(results.exception.args[0]['changed'])
 
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]['component']['name'],
             toModify["name"],
             "name: " +
             results.exception.args[0]['component']['name'])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]['component']['config']['vendor'][0],
             toModify['config']['vendor'][0],
             "vendor: " +
             results.exception.args[0]['component']['config']['vendor'][0])
-        self.assertEquals(
+        self.assertEqual(
             results.exception.args[0]['component']['config']['connectionUrl'][0],
             toModify['config']['connectionUrl'][0],
             "connectionUrl: " +
@@ -824,7 +824,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
         self.assertTrue(
             subComponentFound,
             "Sub component not found in the sub components")
-        self.assertEquals(
+        self.assertEqual(
             subComponent["config"]["groups.dn"][0],
             toModify["subComponents"]["org.keycloak.storage.ldap.mappers.LDAPStorageMapper"][0]["config"]["groups.dn"][0],
             "groups.dn: " +
@@ -846,7 +846,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
         self.assertTrue(
             subComponentFound,
             "Sub component not found in the sub components")
-        self.assertEquals(
+        self.assertEqual(
             subComponent["config"]["user.model.attribute"][0],
             toModify["subComponents"]["org.keycloak.storage.ldap.mappers.LDAPStorageMapper"][2]["config"]["user.model.attribute"][0],
             "user.model.attribute: " +
@@ -860,7 +860,7 @@ class KeycloakComponentTestCase(ModuleTestCase):
         self.assertTrue(
             subComponentFound,
             "Sub component not found in the sub components")
-        self.assertEquals(
+        self.assertEqual(
             subComponent["config"]["user.model.attribute"][0],
             toModify["subComponents"]["org.keycloak.storage.ldap.mappers.LDAPStorageMapper"][3]["config"]["user.model.attribute"][0],
             "user.model.attribute: " +
