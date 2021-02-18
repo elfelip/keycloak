@@ -74,6 +74,7 @@ options:
             - Values may be single values (e.g. a string) or a list of strings.
     attributes_list:
         type: list
+        elements: dict
         description:
             - A dict of key/value pairs list to set as custom attributes for the group.
             - Those attributes will be added to attributes dict.
@@ -89,10 +90,12 @@ options:
                 type: str
     realmRoles:
         type: list
+        elements: str
         description:
             - List of realm roles to assign to the group.
     clientRoles:
         type: list
+        elements: dict
         description:
             - List of client roles to assign to group.
         suboptions:
@@ -102,6 +105,7 @@ options:
                     - Client Id of the client role
             roles:
                 type: list
+                elements: str
                 description:
                     - List of roles for this client to assing to group
     path:
@@ -216,8 +220,8 @@ EXAMPLES = '''
         - admin
         - another-realm-role
     clientRoles:
-        clientid: master-realm
-        roles:
+        - clientid: master-realm
+          roles:
             - manage-users
             - view-identity-providers
   delegate_to: localhost
@@ -294,9 +298,9 @@ def main():
         name=dict(type='str'),
         attributes=dict(type='dict'),
         path=dict(type='str'),
-        attributes_list=dict(type='list'),
-        realmRoles=dict(type='list'),
-        clientRoles=dict(type='list'),
+        attributes_list=dict(type='list', elements='dict'),
+        realmRoles=dict(type='list', elements='str'),
+        clientRoles=dict(type='list', elements='dict'),
         syncLdapMappers=dict(type='bool', default=False),
         force=dict(type='bool', default=False),
     )

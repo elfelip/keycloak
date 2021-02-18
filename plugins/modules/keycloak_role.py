@@ -59,6 +59,7 @@ options:
             - If the composite role is a client role, the clientId (not id of the client) must be specified.
         required: false
         type: list
+        elements: dict
         suboptions:
             name:
                 description:
@@ -168,7 +169,7 @@ def main():
         composite=dict(type='bool', default=False),
         clientRole=dict(type='bool', default=False),
         containerId=dict(type='str', required=False),
-        composites=dict(type='list', default=[], options=composites_spec),
+        composites=dict(type='list', elements='dict', default=[], options=composites_spec),
         state=dict(choices=["absent", "present"], default='present'),
         force=dict(type='bool', default=False),
     )

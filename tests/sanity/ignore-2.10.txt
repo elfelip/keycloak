@@ -1,3 +1,4 @@
 Jenkinsfile shebang
 roles/keycloak/tests/CLUSTER/testpostgres.sh shebang
 plugins/modules/keycloak_component.py validate-modules:parameter-invalid
+plugins/modules/keycloak_identity_provider.py validate-modules:parameter-invalid

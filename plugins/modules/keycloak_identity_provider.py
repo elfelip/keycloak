@@ -143,6 +143,7 @@ options:
     - List of mappers for the Identity provider.
     required: false
     type: list
+    elements: dict
     suboptions:
         name:
             description:
@@ -370,7 +371,7 @@ def main():
         postBrokerLoginFlowAlias=dict(type='str'),
         linkOnly=dict(type='bool', default=False),
         config=dict(type='dict', options=idpconfig_spec),
-        mappers=dict(type='list', options=mapper_spec),
+        mappers=dict(type='list', elements='dict', options=mapper_spec),
         state=dict(choices=["absent", "present"], default='present'),
         force=dict(type='bool', default=False),
     )

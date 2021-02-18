@@ -23,7 +23,7 @@ options:
     adminTheme:
         description:
             - Theme to use for this realm's admin console.
-        required: false
+        required: False
         type: str
     accessCodeLifespan:
         description:
@@ -53,7 +53,7 @@ options:
     accountTheme:
         description:
             - Theme to use for this realm's accounts.
-        required: false
+        required: False
         type: str
     actionTokenGeneratedByAdminLifespan:
         description:
@@ -68,7 +68,7 @@ options:
     attributes:
         description:
             - Attributes.
-        required: false
+        required: False
         type: dict
     browserFlow:
         description:
@@ -78,7 +78,7 @@ options:
     browserSecurityHeaders:
         description:
             - Browser Security Headers.
-        required: false
+        required: False
         type: dict
     bruteForceProtected:
         description:
@@ -93,13 +93,14 @@ options:
     defaultLocale:
         description:
             - If multiple locales are supported, which one will be used as default language.
-        required: false
+        required: False
         type: str
     defaultRoles:
         description:
             - Default roles.
         default: [ "offline_access", "uma_authorization" ]
         type: list
+        elements: str
     directGrantFlow:
         description:
             - Direct Grant Flow.
@@ -121,7 +122,7 @@ options:
         description:
             - Duplicate Emails Allowed.
         type: bool
-        required: false
+        default: False
     editUsernameAllowed:
         description:
             - Edit Username Allowed.
@@ -130,7 +131,7 @@ options:
     emailTheme:
         description:
             - Theme to use for this realm's emails.
-        required: false
+        required: False
         type: str
     enabled:
         description:
@@ -155,6 +156,7 @@ options:
                 description:
                     - Types of event to log.
                 type: list
+                elements: str
                 choices:
                     - SEND_RESET_PASSWORD
                     - UPDATE_TOTP
@@ -221,6 +223,7 @@ options:
                 description:
                     - List of event listeners to log.
                 type: list
+                elements: str
     failureFactor:
         description:
             - Failure Factor.
@@ -228,13 +231,13 @@ options:
         type: int
     force:
         type: bool
-        default: false
+        default: False
         description:
             - If true, allows to remove realm and recreate it.
     internationalizationEnabled:
         description:
             - Is internationalization enabled for this realm?
-        required: false
+        required: False
         type: bool
     loginTheme:
         description:
@@ -304,7 +307,7 @@ options:
         description:
             - Password Policy.
         default: hashIterations(20000)
-        required: false
+        required: False
         type: str
     permanentLockout:
         description:
@@ -340,13 +343,14 @@ options:
         description:
             - Registration Flow.
         default: registration
-        required: false
+        required: False
         type: str
     requiredCredentials:
         description:
             - Required Credentials.
         default: [ "password" ]
         type: list
+        elements: str
     resetCredentialsFlow:
         description:
             - Reset Credentials Flow.
@@ -361,6 +365,7 @@ options:
         description:
             - Revoke Refresh Token.
         type: bool
+        default: False
     smtpServer:
         description:
         - SMTP Server.
@@ -457,6 +462,7 @@ options:
             - List of supported languages for the realm.
         required: false
         type: list
+        elements: str
     verifyEmail:
         description:
             - Verify Email.
@@ -610,7 +616,8 @@ def main():
             "type": "bool"
         },
         "eventsListeners": {
-            "type": "list"
+            "type": "list",
+            "elements": "str"
         },
         "adminEventsEnabled": {
             "type": "bool"
@@ -623,6 +630,7 @@ def main():
         },
         "enabledEventTypes": {
             "type": "list",
+            "elements": "str",
             "choices": [
                 "SEND_RESET_PASSWORD",
                 "UPDATE_TOTP",
@@ -695,7 +703,7 @@ def main():
         bruteForceProtected=dict(type='bool', default=False),
         clientAuthenticationFlow=dict(type='str', default="clients"),
         defaultLocale=dict(type="str"),
-        defaultRoles=dict(type='list', default=["offline_access", "uma_authorization"]),
+        defaultRoles=dict(type='list', elements='str', default=["offline_access", "uma_authorization"]),
         directGrantFlow=dict(type='str', default="direct grant"),
         displayName=dict(type='str', required=True, aliases=['name']),
         displayNameHtml=dict(type='str', required=True, aliases=['namehtml']),
@@ -728,7 +736,7 @@ def main():
         registrationEmailAsUsername=dict(type='bool', default=False),
         registrationFlow=dict(type='str', default="registration"),
         rememberMe=dict(type='bool', default=False),
-        requiredCredentials=dict(type='list', default=["password"]),
+        requiredCredentials=dict(type='list', elements='str', default=["password"]),
         resetCredentialsFlow=dict(type='str', default="reset credentials"),
         resetPasswordAllowed=dict(type='bool', default=False),
         revokeRefreshToken=dict(type='bool', default=False),
@@ -737,7 +745,7 @@ def main():
         ssoSessionIdleTimeout=dict(type='int', default=1800),
         ssoSessionMaxLifespan=dict(type='int', default=36000),
         state=dict(choices=["absent", "present"], default='present'),
-        supportedLocales=dict(type="list"),
+        supportedLocales=dict(type="list", elements="str"),
         verifyEmail=dict(type='bool', default=False),
         waitIncrementSeconds=dict(type='int', default=60),
     )

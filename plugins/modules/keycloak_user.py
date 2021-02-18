@@ -74,11 +74,13 @@ options:
             - List of realm roles for the user.
         required: false
         type: list
+        elements: str
     clientRoles:
         description:
             - List of ClientRoles for the user.
         required: false
         type: list
+        elements: dict
         suboptions:
             clientId:
                 description:
@@ -89,12 +91,14 @@ options:
                 description:
                     - List of roles for this client to grant to the user.
                 type: list
+                elements: str
                 required: true
     clientConsents:
         description:
             - client Authenticator Type.
         required: false
         type: list
+        elements: dict
         suboptions:
             clientId:
                 description:
@@ -105,26 +109,31 @@ options:
                 description:
                 - List of client roles to assign to the user
                 type: list
+                elements: str
                 required: true
     groups:
         description:
             - List of groups for the user.
         type: list
+        elements: str
     credentials:
         description:
             - User credentials.
         required: false
         type: list
+        elements: dict
     requiredActions:
         description:
             - requiredActions user Auth.
         required: false
         type: list
+        elements: str
     federatedIdentities:
         description:
             - list of IDP of user.
         required: false
         type: list
+        elements: str
     attributes:
         description:
             - list user attributes.
@@ -140,6 +149,7 @@ options:
             - list user Credential Type.
         required: false
         type: list
+        elements: str
     origin:
         description:
             - user origin.
@@ -274,7 +284,7 @@ def main():
 
     client_role_spec = dict(
         clientId=dict(type='str', required=True),
-        roles=dict(type='list', required=True),
+        roles=dict(type='list', elements='str', required=True),
     )
     meta_args = dict(
         realm=dict(type='str', default='master'),
@@ -290,14 +300,14 @@ def main():
         serviceAccountClientId=dict(type='str'),
         attributes=dict(type='dict'),
         access=dict(type='dict'),
-        clientRoles=dict(type='list', default=[], options=client_role_spec),
-        realmRoles=dict(type='list', default=[]),
-        groups=dict(type='list', default=[]),
-        disableableCredentialTypes=dict(type='list', default=[]),
-        requiredActions=dict(type='list', default=[]),
-        credentials=dict(type='list', default=[]),
-        federatedIdentities=dict(type='list', default=[]),
-        clientConsents=dict(type='list', default=[]),
+        clientRoles=dict(type='list', elements='dict', default=[], options=client_role_spec),
+        realmRoles=dict(type='list', elements='str', default=[]),
+        groups=dict(type='list', elements='str', default=[]),
+        disableableCredentialTypes=dict(type='list', elements='str', default=[]),
+        requiredActions=dict(type='list', elements='str', default=[]),
+        credentials=dict(type='list', elements='dict', default=[]),
+        federatedIdentities=dict(type='list', elements='str', default=[]),
+        clientConsents=dict(type='list', elements='dict', default=[]),
         origin=dict(type='str'),
         state=dict(choices=["absent", "present"], default='present'),
         force=dict(type='bool', default=False),
