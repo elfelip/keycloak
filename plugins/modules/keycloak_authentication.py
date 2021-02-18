@@ -44,6 +44,7 @@ options:
             - Configuration structure for the executions
         required: false
         type: list
+        elements: dict
     state:
         description:
             - Control if the authentication flow must exists or not
@@ -146,7 +147,7 @@ def main():
         alias=dict(type='str', required=True),
         providerId=dict(type='str'),
         copyFrom=dict(type='str'),
-        authenticationExecutions=dict(type='list'),
+        authenticationExecutions=dict(type='list', elements='dict'),
         state=dict(choices=["absent", "present"], default='present'),
         force=dict(type='bool', default=False),
     )

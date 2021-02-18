@@ -6,9 +6,7 @@
 # https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
-from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.elfelip.keycloak.plugins.module_utils.keycloak import KeycloakAPI, camel, \
-    keycloak_argument_spec, get_token, KeycloakError, isDictEquals, ClientScope, ProtocolMapper
+
 __metaclass__ = type
 
 
@@ -23,7 +21,6 @@ module: keycloak_client_scope
 short_description: Configure a client scope in Keycloak
 description:
     - This module creates, removes or update Keycloak client scope role.
-version_added: "2.10"
 options:
     realm:
         description:
@@ -47,7 +44,7 @@ options:
         choices:
             - openid-connect
             - saml
-        type: string
+        type: str
     attributes:
         description:
             - Attributes for the client scope
@@ -58,6 +55,7 @@ options:
             - List or protocole mappers for the client scope
         required: false
         type: list
+        elements: dict
         suboptions:
             name:
                 description:
@@ -70,6 +68,7 @@ options:
                 type: str
                 choices:
                     - openid-connect
+                    - saml
                 default: openid-connect
             protocolMapper:
                 description:
@@ -193,6 +192,10 @@ changed:
   returned: always
   type: bool
 '''
+
+from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.elfelip.keycloak.plugins.module_utils.keycloak import KeycloakAPI, camel, \
+    keycloak_argument_spec, get_token, KeycloakError, isDictEquals, ClientScope, ProtocolMapper
 
 
 def main():

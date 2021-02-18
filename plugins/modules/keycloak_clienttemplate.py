@@ -19,8 +19,6 @@ module: keycloak_clienttemplate
 
 short_description: Allows administration of Keycloak client templates via Keycloak API
 
-version_added: "2.5"
-
 description:
     - This module allows the administration of Keycloak client templates via the Keycloak REST API. It
       requires access to the REST API via OpenID Connect; the user connecting and the client being
@@ -76,6 +74,7 @@ options:
             - a list of dicts defining protocol mappers for this client template.
               This is 'protocolMappers' in the Keycloak REST API.
         type: list
+        elements: dict
         suboptions:
             consentRequired:
                 description:
@@ -276,7 +275,6 @@ def main():
     meta_args = dict(
         realm=dict(type='str', default='master'),
         state=dict(default='present', choices=['present', 'absent']),
-
         id=dict(type='str'),
         name=dict(type='str'),
         description=dict(type='str'),

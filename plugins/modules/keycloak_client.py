@@ -129,6 +129,7 @@ options:
         aliases:
             - defaultRoles
         type: list
+        elements: str
     redirect_uris:
         description:
             - Acceptable redirect URIs for this client.
@@ -136,6 +137,7 @@ options:
         aliases:
             - redirectUris
         type: list
+        elements: str
     web_origins:
         description:
             - List of allowed CORS origins.
@@ -143,6 +145,7 @@ options:
         aliases:
             - webOrigins
         type: list
+        elements: str
     not_before:
         description:
             - Revoke any tokens issued before this date for this client (this is a UNIX timestamp).
@@ -292,6 +295,7 @@ options:
         aliases:
             - protocolMappers
         type: list
+        elements: dict
         suboptions:
             consentRequired:
                 description:
@@ -475,6 +479,7 @@ options:
             - clientRoles
             - roles
         type: list
+        elements: dict
         suboptions:
             name:
                 description:
@@ -493,6 +498,7 @@ options:
                 description:
                     - List of composite roles
                 type: list
+                elements: dict
                 suboptions:
                     id:
                         description:
@@ -520,6 +526,7 @@ options:
                 description:
                     - list of realm_access roles
                 type: list
+                elements: dict
                 suboptions:
                     name:
                         description:
@@ -537,6 +544,7 @@ options:
                 description:
                     - list of resource_access roles
                 type: list
+                elements: dict
                 suboptions:
                     id:
                         description:
@@ -546,6 +554,7 @@ options:
                         description:
                             - list of realm_access roles
                         type: list
+                        elements: dict
                         suboptions:
                             name:
                                 description:
@@ -826,11 +835,11 @@ def main():
     )
     clientsscopemappings_spec = dict(
         id=dict(type='str'),
-        roles=dict(type='list', options=clientrolescopemappings_spec)
+        roles=dict(type='list', elements='dict', options=clientrolescopemappings_spec)
     )
     scopemappings_spec = dict(
-        realm=dict(type='list', options=realmscopemappings_spec),
-        clients=dict(type='list', options=clientsscopemappings_spec)
+        realm=dict(type='list', elements='dict', options=realmscopemappings_spec),
+        clients=dict(type='list', elements='dict', options=clientsscopemappings_spec)
     )
     meta_args = dict(
         state=dict(default='present', choices=['present', 'absent']),
@@ -847,9 +856,9 @@ def main():
         client_authenticator_type=dict(type='str', choices=['client-secret', 'client-jwt'], aliases=['clientAuthenticatorType']),
         secret=dict(type='str', no_log=True),
         registration_access_token=dict(type='str', aliases=['registrationAccessToken']),
-        default_roles=dict(type='list', aliases=['defaultRoles']),
-        redirect_uris=dict(type='list', aliases=['redirectUris']),
-        web_origins=dict(type='list', aliases=['webOrigins']),
+        default_roles=dict(type='list', elements='str', aliases=['defaultRoles']),
+        redirect_uris=dict(type='list', elements='str', aliases=['redirectUris']),
+        web_origins=dict(type='list', elements='str', aliases=['webOrigins']),
         not_before=dict(type='int', aliases=['notBefore']),
         bearer_only=dict(type='bool', aliases=['bearerOnly']),
         consent_required=dict(type='bool', aliases=['consentRequired']),

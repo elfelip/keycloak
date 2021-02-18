@@ -4173,6 +4173,7 @@ class ClientScope():
             protocolMappers=dict(
                 type='list',
                 default=[],
+                elements='dict',
                 options=ProtocolMapper().argument_spec()),
             state=dict(
                 type='str',
@@ -4355,8 +4356,8 @@ class ProtocolMapper():
                 default='openid-connect',
                 choices=self.protocol_choices),
             protocolMapper=dict(
-                type='string',
-                default="protocolMapper",
+                type='str',
+                required=True,
                 choices=self.protocolMapper_choices),
             consentRequired=dict(
                 type='bool',
