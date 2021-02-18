@@ -70,6 +70,7 @@ options:
                     - LDAP vendor/product
                     - Value must be a list of one string item.
                 type: list
+                elements: str
                 choices:
                     - ad
                     - tivoli
@@ -82,11 +83,13 @@ options:
                     - It is usually uid, for Active Directory it is sAMAccountName.
                     - Value must be a list of one string item.
                 type: list
+                elements: str
             editMode:
                 description:
                     - The Edit Mode configuration option defines the edit policy you have with your LDAP store.
                     - Value must be a list of one string item.
                 type: list
+                elements: str
                 choices:
                     - READ_ONLY
                     - WRITABLE
@@ -97,6 +100,7 @@ options:
                     - Usually it's the same as Username LDAP attribute. For active Directory, it's usually cn.
                     - Value must be a list of one string item.
                 type: list
+                elements: str
             uuidLDAPAttribute:
                 description:
                     - Name of LDAP attribute, which is used as unique object identifier.
@@ -105,25 +109,30 @@ options:
                     - For Red Hat Directory Server it's nsuniqueid
                     - Value must be a list of one string item.
                 type: list
+                elements: str
             userObjectClasses:
                 description:
                     - All values of LDAP objectClasses attribute for users in LDAP.
                 type: list
+                elements: str
             connectionUrl:
                 description:
                     - LDAP connection URL in the format [ldap|dlaps]://server.name:port
                     - Value must be a list of one string item.
                 type: list
+                elements: str
             usersDn:
                 description:
                     - Full DN of LDAP tree where users are stored
                     - Value must be a list of one string item.
                 type: list
+                elements: str
             authType:
                 description:
                     - LDAP authentication type.
                     - Value must be a list of one string item.
                 type: list
+                elements: str
                 choices:
                     - simple
                     - none
@@ -132,29 +141,34 @@ options:
                     - DN of LDAP admin used to authenticate to LDAP server
                     - Value must be a list of one string item.
                 type: list
+                elements: str
             bindCredential:
                 description:
                     - Password for the LDAP admin
                     - Value must be a list of one string item.
                 type: list
+                elements: str
             changedSyncPeriod:
                 description:
                     - Period for synchronization of changed or newly created LDAP users.
                     - To disable changed user synchronization, use -1
                     - Value must be a list of one string item.
                 type: list
+                elements: str
             fullSyncPeriod:
                 description:
                     - Period for full synchronization of LDAP users.
                     - To disable full user synchronization, use -1
                     - Value must be a list of one string item.
                 type: list
+                elements: str
             pagination:
                 description:
                     - Does the LDAP support pagination.
                     - Default value is false if this option is not defined
                     - Value must be a list of one string item.
                 type: list
+                elements: str
                 choices:
                     - ['true']
                     - ['false']
@@ -164,6 +178,7 @@ options:
                     - Default value is true
                     - Value must be a list of one string item.
                 type: list
+                elements: str
                 choices:
                     - ['true']
                     - ['false']
@@ -173,6 +188,7 @@ options:
                     - Default value is ["DEFAULT"] if this option is not defined.
                     - Value must be a list of one string item.
                 type: list
+                elements: str
                 choices:
                     - DEFAULT
                     - EVICT_DAILY
@@ -186,6 +202,7 @@ options:
                     - Default value is false if this option is not defined
                     - Value must be a list of one string item.
                 type: list
+                elements: str
                 choices:
                     - ['true']
                     - ['false']
@@ -195,6 +212,7 @@ options:
                     - Default value is false if option is not defined
                     - Value must be a list of one string item.
                 type: list
+                elements: str
                 choices:
                     - ['true']
                     - ['false']
@@ -204,6 +222,7 @@ options:
                     - Default value is true if not defined.
                     - Value must be a list of one string item.
                 type: list
+                elements: str
                 choices:
                     - ['true']
                     - ['false']
@@ -213,6 +232,7 @@ options:
                     - Default value is true if not defined.
                     - Value must be a list of one string item.
                 type: list
+                elements: str
                 choices:
                     - ['true']
                     - ['false']
@@ -224,9 +244,10 @@ options:
                     - Default value is 2 if the option is not defined.
                     - Value must be a list of one string item.
                 type: list
+                elements: str
                 choices:
-                    - 1
-                    - 2
+                    - '1'
+                    - '2'
             priority:
                 description:
                     - Order of priority for user search when multiple user storages are defined.
@@ -234,12 +255,14 @@ options:
                     - Default value is 0 when this option is not defined.
                     - Value must be a list of one string item.
                 type: list
+                elements: int
             validatePasswordPolicy:
                 description:
                     - If true, users password will be checked against Keycloak password policy.
                     - Default value is true if not defined.
                     - Value must be a list of one string item.
                 type: list
+                elements: str
                 choices:
                     - ['true']
                     - ['false']
@@ -248,6 +271,7 @@ options:
                     - Count of LDAP users to be imported in a single transaction.
                     - Value must be a list of one string item.
                 type: list
+                elements: str
     subComponents:
         description:
             - List of sub components to create inside the component.
@@ -258,6 +282,7 @@ options:
                 description:
                     - LDAP storage mappers
                 type: list
+                elements: dict
                 suboptions:
                     name:
                         description:
@@ -281,6 +306,7 @@ options:
                                     - LDAP attrribute to map from.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                             is.mandatory.in.ldap:
                                 description:
                                     - This is for user-attribute-ldap-mapper type.
@@ -288,6 +314,7 @@ options:
                                     - Default value is true if the option is not defined.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                                 choices:
                                     - ['true']
                                     - ['false']
@@ -298,6 +325,7 @@ options:
                                     - Default value is false if the option is not defined.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                                 choices:
                                     - ['true']
                                     - ['false']
@@ -307,6 +335,7 @@ options:
                                     - Attribute of keycloak user model to map to..
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                             always.read.value.from.ldap:
                                 description:
                                     - This is for user-attribute-ldap-mapper type.
@@ -314,6 +343,7 @@ options:
                                     - Default value is true if the option is not defined.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                                 choices:
                                     - ['true']
                                     - ['false']
@@ -323,6 +353,7 @@ options:
                                     - LDAP/Keycloak groups synchronization mode.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                                 choices:
                                     - LDAP_ONLY
                                     - IMPORT
@@ -333,6 +364,7 @@ options:
                                     - Membership attribute type, DN or UID.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                                 choices:
                                     - DN
                                     - UID
@@ -342,6 +374,7 @@ options:
                                     - Specify how to retrieve group members.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                                 choices:
                                     - LOAD_GROUPS_BY_MEMBER_ATTRIBUTE
                                     - GET_GROUPS_FROM_USER_MEMBEROF_ATTRIBUTE
@@ -352,12 +385,14 @@ options:
                                     - Name of LDAP attribute which is used as the group name.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                             membership.ldap.attribute:
                                 description:
                                     - This option is for group-ldap-mapper.
                                     - Name of LDAP attribute which is used for membership mapping.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                             membership.user.ldap.attribute:
                                 description:
                                     - This option is for group-ldap-mapper.
@@ -365,6 +400,7 @@ options:
                                     - Name of LDAP attribute which is used for membership mapping.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                             memberof.ldap.attribute:
                                 description:
                                     - This option is for group-ldap-mapper.
@@ -372,6 +408,7 @@ options:
                                     - Name of LDAP attribute on LDAP user which is used for membership mapping.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                             preserve.group.inheritance:
                                 description:
                                     - This option is for group-ldap-mapper.
@@ -379,6 +416,7 @@ options:
                                     - Default value is true if the option is not defined.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                                 choices:
                                     - ['true']
                                     - ['false']
@@ -388,12 +426,14 @@ options:
                                     - LDAP DN where groups are.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                             group.object.classes:
                                 description:
                                     - This option is for group-ldap-mapper.
                                     - Object class or classes for LDAP group objects.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                             drop.non.existing.groups.during.sync:
                                 description:
                                     - This option is for group-ldap-mapper.
@@ -401,6 +441,7 @@ options:
                                     - Default value is false if the option is not defined.
                                     - Value must be a list of one string item.
                                 type: list
+                                elements: str
                                 choices:
                                     - ['true']
                                     - ['false']
@@ -609,52 +650,52 @@ from ansible.module_utils.basic import AnsibleModule
 def main():
     argument_spec = keycloak_argument_spec()
     config_spec = dict(
-        vendor=dict(type='list', choices=['ad', 'tivoli', 'edirectory', 'rhds', 'other']),
-        usernameLDAPAttribute=dict(type='list'),
-        editMode=dict(type='list', choices=['READ_ONLY', 'WRITABLE', 'UNSYNCED']),
-        rdnLDAPAttribute=dict(type='list'),
-        uuidLDAPAttribute=dict(type='list'),
-        userObjectClasses=dict(type='list'),
-        connectionUrl=dict(type='list'),
-        usersDn=dict(type='list'),
-        authType=dict(type='list', choices=['simple', 'none']),
-        bindDn=dict(type='list'),
-        bindCredential=dict(type='list'),
-        changedSyncPeriod=dict(type='list'),
-        fullSyncPeriod=dict(type='list'),
-        pagination=dict(type='list', choices=['true', 'false']),
-        connectionPooling=dict(type='list', choices=['true', 'false']),
-        cachePolicy=dict(type='list', choices=['DEFAULT', 'EVICT_DAILY', 'EVICT_WEEKLY', 'MAX_LIFESPAN', 'NO_CACHE']),
-        useKerberosForPasswordAuthentication=dict(type='list', choices=['true', 'false']),
-        allowKerberosAuthentication=dict(type='list', choices=[['true'], ['false']]),
-        importEnabled=dict(type='list', choices=['true', 'false']),
-        syncRegistrations=dict(type='list', choices=['true', 'false']),
-        searchScope=dict(type='list', choices=['1', '2']),
-        priority=dict(type='list'),
-        validatePasswordPolicy=dict(type='list', choices=['true', 'false']),
-        batchSizeForSync=dict(type='list')
+        vendor=dict(type='list', elements='str', choices=['ad', 'tivoli', 'edirectory', 'rhds', 'other']),
+        usernameLDAPAttribute=dict(type='list', elements='str'),
+        editMode=dict(type='list', elements='str', choices=['READ_ONLY', 'WRITABLE', 'UNSYNCED']),
+        rdnLDAPAttribute=dict(type='list', elements='str'),
+        uuidLDAPAttribute=dict(type='list', elements='str'),
+        userObjectClasses=dict(type='list', elements='str'),
+        connectionUrl=dict(type='list', elements='str'),
+        usersDn=dict(type='list', elements='str'),
+        authType=dict(type='list', elements='str', choices=['simple', 'none']),
+        bindDn=dict(type='list', elements='str'),
+        bindCredential=dict(type='list', elements='str'),
+        changedSyncPeriod=dict(type='list', elements='str'),
+        fullSyncPeriod=dict(type='list', elements='str'),
+        pagination=dict(type='list', elements='str', choices=['true', 'false']),
+        connectionPooling=dict(type='list', elements='str', choices=['true', 'false']),
+        cachePolicy=dict(type='list', elements='str', choices=['DEFAULT', 'EVICT_DAILY', 'EVICT_WEEKLY', 'MAX_LIFESPAN', 'NO_CACHE']),
+        useKerberosForPasswordAuthentication=dict(type='list', elements='str', choices=['true', 'false']),
+        allowKerberosAuthentication=dict(type='list', elements='str', choices=[['true'], ['false']]),
+        importEnabled=dict(type='list', elements='str', choices=['true', 'false']),
+        syncRegistrations=dict(type='list', elements='str', choices=['true', 'false']),
+        searchScope=dict(type='list', elements='str', choices=['1', '2']),
+        priority=dict(type='list', elements='int'),
+        validatePasswordPolicy=dict(type='list', elements='str', choices=['true', 'false']),
+        batchSizeForSync=dict(type='list', elements='str')
     )
     ldapstoragemapper_spec = {
-        "ldap.attribute": {'type': 'list'},
-        "is.mandatory.in.ldap": {'type': 'list', 'choices': ['true', 'false']},
-        "read.only": {'type': 'list', 'choices': ['true', 'false']},
-        "user.model.attribute": {'type': 'list'},
-        "always.read.value.from.ldap": {'type': 'list', 'choices': [['true'], ['false']]},
-        'mode': {'type': 'list', 'choices': ['LDAP_ONLY', 'READ_ONLY', 'IMPORT']},
-        "membership.attribute.type": {'type': 'list', 'choices': ['DN', 'UID']},
-        "user.roles.retrieve.strategy": {'type': 'list', 'choices': [
+        "ldap.attribute": {'type': 'list', 'elements': 'str'},
+        "is.mandatory.in.ldap": {'type': 'list', 'elements': 'str', 'choices': ['true', 'false']},
+        "read.only": {'type': 'list', 'elements': 'str', 'choices': ['true', 'false']},
+        "user.model.attribute": {'type': 'list', 'elements': 'str'},
+        "always.read.value.from.ldap": {'type': 'list', 'elements': 'str', 'choices': [['true'], ['false']]},
+        'mode': {'type': 'list', 'elements': 'str', 'choices': ['LDAP_ONLY', 'READ_ONLY', 'IMPORT']},
+        "membership.attribute.type": {'type': 'list', 'elements': 'str', 'choices': ['DN', 'UID']},
+        "user.roles.retrieve.strategy": {'type': 'list', 'elements': 'str', 'choices': [
             'LOAD_GROUPS_BY_MEMBER_ATTRIBUTE',
             'GET_GROUPS_FROM_USER_MEMBEROF_ATTRIBUTE',
             'LOAD_GROUPS_BY_MEMBER_ATTRIBUTE_RECURSIVELY'
         ]},
-        'group.name.ldap.attribute': {'type': 'list'},
-        'membership.ldap.attribute': {'type': 'list'},
-        'membership.user.ldap.attribute': {'type': 'list'},
-        'memberof.ldap.attribute': {'type': 'list'},
-        'preserve.group.inheritance': {'type': 'list', 'choices': ['true', 'false']},
-        'groups.dn': {'type': 'list'},
-        'group.object.classes': {'type': 'list'},
-        'drop.non.existing.groups.during.sync': {'type': 'list', 'choices': ['true', 'false']}
+        'group.name.ldap.attribute': {'type': 'list', 'elements': 'str'},
+        'membership.ldap.attribute': {'type': 'list', 'elements': 'str'},
+        'membership.user.ldap.attribute': {'type': 'list', 'elements': 'str'},
+        'memberof.ldap.attribute': {'type': 'list', 'elements': 'str'},
+        'preserve.group.inheritance': {'type': 'list', 'elements': 'str', 'choices': ['true', 'false']},
+        'groups.dn': {'type': 'list', 'elements': 'str'},
+        'group.object.classes': {'type': 'list', 'elements': 'str'},
+        'drop.non.existing.groups.during.sync': {'type': 'list', 'elements': 'str', 'choices': ['true', 'false']}
     }
     subcomponents_config_spec = {
         "name": {"type": "str"},
@@ -662,7 +703,7 @@ def main():
         "config": {"type": "dict", "options": ldapstoragemapper_spec}
     }
     subcomponents_spec = {
-        "org.keycloak.storage.ldap.mappers.LDAPStorageMapper": {'type': 'list', 'options': subcomponents_config_spec}
+        "org.keycloak.storage.ldap.mappers.LDAPStorageMapper": {'type': 'list', 'elements': 'dict', 'options': subcomponents_config_spec}
     }
     meta_args = dict(
         id=dict(type='str'),
