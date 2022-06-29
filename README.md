@@ -3,7 +3,7 @@
 ![](https://github.com/octo-technology/keycloak-collection/workflows/ansible-test/badge.svg?branch=master)
 [![codecov](https://codecov.io/gh/octo-technology/keycloak-collection/branch/master/graph/badge.svg)](https://codecov.io/gh/octo-technology/keycloak-collection)
 
-This repo hosts the `inspq.keycloak` Ansible Collection.
+This repo hosts the `elfelip.keycloak` Ansible Collection.
 
 The collection includes a variety of Ansible content to help automate the management of resources in Keycloak.
 
@@ -37,13 +37,13 @@ This collection is currently testing the modules against Keycloak versions `8.0.
 
 Before using the Keycloak collection, you need to install it with the Ansible Galaxy CLI:
 
-    ansible-galaxy collection install <collection_archive_path>
+    ansible-galaxy collection install elfelip.keycloak
 
 The archive can be downloaded from the Github release page.
 
 ### Using modules from the Keycloak Collection in your playbooks
 
-You can either call modules by their Fully Qualified Collection Namespace (FQCN), like `inspq.keycloak.keycloak_client`, or you can call modules by their short name if you list the `inspq.keycloak` collection in the playbook's `collections`, like so:
+You can either call modules by their Fully Qualified Collection Namespace (FQCN), like `elfelip.keycloak.keycloak_client`, or you can call modules by their short name if you list the `elfelip.keycloak` collection in the playbook's `collections`, like so:
 
 ```yaml
 ---
@@ -52,7 +52,7 @@ You can either call modules by their Fully Qualified Collection Namespace (FQCN)
   connection: local
 
   collections:
-    - inspq.keycloak
+    - elfelip.keycloak
 
   tasks:
     - name: Create or update Keycloak client (minimal example)
